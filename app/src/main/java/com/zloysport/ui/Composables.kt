@@ -31,8 +31,14 @@ fun TitleBar(
     Row(
         modifier = Modifier.fillMaxWidth()
     ) {
-        Icon(painter = painterResource(id = leftIcon), contentDescription = "")
+        Icon(
+            painter = painterResource(id = leftIcon),
+            contentDescription = ""
+        )
         Text(text = stringResource(id = title))
-        Icon(painter = painterResource(id = rightIcon), contentDescription = "")
+        Icon(
+            painter = painterResource(id = rightIcon),
+            contentDescription = ""
+        )
     }
 }
