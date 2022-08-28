@@ -4,4 +4,5 @@
     <string name="confirm_button_title">Далее</string>
     <string name="enter_training_name">Введите название тренировки</string>
     <string name="enter_training_name_label">Например, отжимания</string>
+    <string name="create_training_title">Создание тренировки</string>
 </resources>
