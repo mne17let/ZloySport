@@ -1,31 +1,27 @@
 package com.zloysport.ui
 
-import android.content.Context
-import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zloysport.R
 
+@Preview
 @Composable
-fun TrainingList(context: Context) {
+fun EnterTrainingNameScreen() {
     Column(
         modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.SpaceBetween
-
+        verticalArrangement = Arrangement.SpaceBetween,
     ) {
         TitleBar(
             R.drawable.ic_back,
@@ -33,58 +29,43 @@ fun TrainingList(context: Context) {
             R.drawable.ic_close,
         )
 
-        EnterTrainingName(context)
-        ConfirmButton(R.string.confirm_button_title, context)
+        EnterTrainingName()
+        ConfirmButton(R.string.confirm_button_title)
     }
 }
 
+@Preview
 @Composable
-fun EnterTrainingName(context: Context) {
-    val valueState: MutableState<String> = remember { mutableStateOf("") }
-    val placeholderState: MutableState<String> = remember { mutableStateOf("введите название") }
-    val labelState: MutableState<String> = remember { mutableStateOf("") }
+fun EnterTrainingName() {
+
+    var valueText by remember { mutableStateOf("") }
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(horizontal = 32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+
     ) {
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            text = "Название"
+                .padding(bottom = 24.dp),
+            textAlign = TextAlign.Center,
+            text = stringResource(id = R.string.enter_training_name)
         )
         OutlinedTextField(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            label = { Text(text = labelState.value) },
-            placeholder = { Text(text = placeholderState.value) },
-            value = valueState.value,
+                .fillMaxWidth(),
+            label = {
+                Text(text = stringResource(id = R.string.enter_training_name_label))
+            },
+            value = valueText,
             onValueChange = { newText ->
-                onValueChanged(newText, context, valueState, placeholderState, labelState)
+                valueText = newText
             }
         )
     }
-}
 
-fun onValueChanged(
-    newText: String,
-    context: Context,
-    valueState: MutableState<String>,
-    placeholderState: MutableState<String>,
-    labelState: MutableState<String>
-) {
-    if (newText == "") {
-        placeholderState.value = "введите название"
-        labelState.value = ""
-    } else {
-        placeholderState.value = ""
-        labelState.value = "введите название"
-    }
-    valueState.value = newText
-    Toast.makeText(context, newText, Toast.LENGTH_SHORT).show()
 
 }
 
@@ -102,18 +83,20 @@ fun TitleBar(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            modifier = Modifier.width(24.dp),
+            modifier = Modifier
+                .width(24.dp)
+                .height(24.dp),
             painter = painterResource(id = leftIcon),
             contentDescription = ""
         )
         Text(
-            modifier = Modifier.background(Color.Green),
             text = stringResource(id = title),
-            fontSize = 24.sp,
-//            fontWeight = FontWeight.Bold
+            fontSize = 22.sp,
         )
         Icon(
-            modifier = Modifier.width(24.dp),
+            modifier = Modifier
+                .width(24.dp)
+                .height(24.dp),
             painter = painterResource(id = rightIcon),
             contentDescription = ""
         )
@@ -123,12 +106,16 @@ fun TitleBar(
 }
 
 @Composable
-fun ConfirmButton(@StringRes stringResourceId: Int, context: Context) {
+fun ConfirmButton(@StringRes stringResourceId: Int) {
+
     Button(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
-        onClick = { Toast.makeText(context, "КНООООПКА", Toast.LENGTH_SHORT).show() }) {
+            .padding(horizontal = 32.dp)
+            .padding(bottom = 106.dp)
+            .height(60.dp),
+        onClick = { }) {
         Text(text = stringResource(stringResourceId))
     }
+
 }
