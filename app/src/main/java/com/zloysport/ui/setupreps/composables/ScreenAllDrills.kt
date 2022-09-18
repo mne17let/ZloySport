@@ -14,6 +14,7 @@ import com.zloysport.R
 import com.zloysport.ui.CommonViewModel
 import com.zloysport.ui.setupreps.composables.common.CommonActionButton
 import com.zloysport.ui.setupreps.composables.common.CommonTitleBar
+import com.zloysport.ui.theme.InfoSize
 
 @Composable
 fun ScreenAllDrills(
@@ -63,7 +64,7 @@ private fun EmptyStateDrills(
                 modifier = Modifier
                     .padding(2.dp),
                 text = "У вас нет тренировок",
-                fontSize = 20.sp,
+                fontSize = InfoSize,
                 textAlign = TextAlign.Center
             )
 

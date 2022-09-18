@@ -12,6 +12,7 @@ import com.zloysport.R
 import com.zloysport.ui.setupreps.composables.common.CommonConfirmButton
 import com.zloysport.ui.setupreps.composables.common.CommonTextField
 import com.zloysport.ui.setupreps.composables.common.CommonTitleBar
+import com.zloysport.ui.theme.InfoSize
 
 @Composable
 fun ScreenEnterTrainingName() {
@@ -42,9 +43,10 @@ private fun ContentEnterRepsName() {
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 24.dp),
+                .padding(bottom = 8.dp),
             textAlign = TextAlign.Center,
-            text = stringResource(id = R.string.enter_drill_name)
+            text = stringResource(id = R.string.enter_drill_name),
+            fontSize = InfoSize
         )
 
         CommonTextField(

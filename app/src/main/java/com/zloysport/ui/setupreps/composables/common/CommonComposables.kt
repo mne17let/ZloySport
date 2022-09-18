@@ -21,8 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.zloysport.ui.theme.MainBlue
+import com.zloysport.ui.theme.*
 
 @Composable
 fun CommonTextField(
@@ -35,7 +34,10 @@ fun CommonTextField(
         modifier = Modifier
             .fillMaxWidth(),
         label = {
-            Text(text = stringResource(id = labelResource))
+            Text(
+                text = stringResource(id = labelResource),
+                fontSize = HintSize
+            )
         },
         value = valueText,
         onValueChange = { newText ->
@@ -60,7 +62,9 @@ fun CommonConfirmButton(@StringRes textResourceId: Int) {
             modifier = Modifier
                 .padding(vertical = 16.dp),
             text = stringResource(textResourceId),
-            color = Color.White
+            color = Color.White,
+            fontSize = ButtonSize,
+            fontWeight = FontWeight.Normal
         )
     }
 }
@@ -85,7 +89,7 @@ fun CommonActionButton(
 
             text = stringResource(textResourceId),
             color = Color.White,
-            fontSize = 20.sp,
+            fontSize = ButtonSize,
             fontWeight = FontWeight.Normal
         )
     }
@@ -126,7 +130,7 @@ fun CommonTitleBar(
                 .padding(start = textStartPadding, end = textEndPadding)
                 .padding(vertical = textVerticalPadding),
             text = stringResource(id = titleResId),
-            fontSize = 22.sp,
+            fontSize = TitleSize,
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold
         )
