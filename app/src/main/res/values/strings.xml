@@ -1,8 +1,9 @@
 <resources>
     <string name="app_name">ZloySport</string>
-    <string name="trainings_title">Мои тренировки</string>
-    <string name="confirm_button_title">Далее</string>
-    <string name="enter_training_name">Введите название тренировки</string>
-    <string name="enter_training_name_label">Например, отжимания</string>
-    <string name="create_training_title">Создание тренировки</string>
+    <string name="all_drills_title">Мои тренировки</string>
+    <string name="next_button_title">Далее</string>
+    <string name="enter_drill_name">Введите название тренировки</string>
+    <string name="enter_drill_name_label">Например, отжимания</string>
+    <string name="create_drill_title">Создание тренировки</string>
+    <string name="create_drill_action">Создать тренировку</string>
 </resources>

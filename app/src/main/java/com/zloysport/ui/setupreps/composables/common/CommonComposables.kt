@@ -1,0 +1,131 @@
+package com.zloysport.ui.setupreps.composables.common
+
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.zloysport.ui.theme.MainBlue
+
+@Composable
+fun CommonTextField(
+    @StringRes labelResource: Int,
+    onValueChangedFromOutside: (newText: String) -> Unit = {}
+) {
+    var valueText by remember { mutableStateOf("") }
+
+    OutlinedTextField(
+        modifier = Modifier
+            .fillMaxWidth(),
+        label = {
+            Text(text = stringResource(id = labelResource))
+        },
+        value = valueText,
+        onValueChange = { newText ->
+            onValueChangedFromOutside(newText)
+            valueText = newText
+        }
+    )
+}
+
+@Composable
+fun CommonConfirmButton(@StringRes textResourceId: Int) {
+    Button(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 32.dp)
+            .padding(bottom = 32.dp)
+            .clip(shape = RoundedCornerShape(corner = CornerSize(16.dp))),
+        onClick = { },
+        colors = ButtonDefaults.buttonColors(backgroundColor = MainBlue)
+    ) {
+        Text(
+            modifier = Modifier
+                .padding(vertical = 16.dp),
+            text = stringResource(textResourceId),
+            color = Color.White
+        )
+    }
+}
+
+@Composable
+fun CommonTitleBar(
+    @DrawableRes leftIconResId: Int? = null,
+    @StringRes titleResId: Int,
+    @DrawableRes rightIconResId: Int? = null,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(4.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        val iconAreaSize = 60.dp
+
+        val textStartPadding = if (leftIconResId == null) iconAreaSize else 0.dp
+        val textEndPadding = if (rightIconResId == null) iconAreaSize else 0.dp
+
+        val textVerticalPadding = if (leftIconResId == null && rightIconResId == null) iconAreaSize / 3 else 0.dp
+
+        leftIconResId?.let {
+            CommonRoundIconButton(
+                modifier = Modifier,
+                areaSize = iconAreaSize,
+                iconRes = it
+            )
+        }
+
+        Text(
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = textStartPadding, end = textEndPadding)
+                .padding(vertical = textVerticalPadding),
+            text = stringResource(id = titleResId),
+            fontSize = 22.sp,
+            textAlign = TextAlign.Center
+        )
+
+        rightIconResId?.let {
+            CommonRoundIconButton(
+                modifier = Modifier,
+                areaSize = 60.dp,
+                iconRes = it
+            )
+        }
+    }
+}
+
+@Composable
+private fun CommonRoundIconButton(
+    modifier: Modifier,
+    areaSize: Dp,
+    @DrawableRes iconRes: Int
+) {
+    Box(
+        modifier = modifier
+            .size(areaSize)
+            .clip(CircleShape),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            modifier = modifier
+                .size(areaSize / 1.5f),
+            painter = painterResource(id = iconRes),
+            contentDescription = "",
+        )
+    }
+}
