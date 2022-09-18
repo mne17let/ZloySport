@@ -14,6 +14,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -60,6 +61,26 @@ fun CommonConfirmButton(@StringRes textResourceId: Int) {
         )
     }
 }
+@Composable
+fun CommonActionButton(@StringRes textResourceId: Int) {
+    Button(
+        modifier = Modifier
+            .padding(8.dp)
+            .clip(shape = RoundedCornerShape(corner = CornerSize(8.dp))),
+        onClick = { },
+        colors = ButtonDefaults.buttonColors(backgroundColor = MainBlue)
+    ) {
+        Text(
+            modifier = Modifier
+                .padding(vertical = 0.dp),
+
+            text = stringResource(textResourceId),
+            color = Color.White,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Normal
+        )
+    }
+}
 
 @Composable
 fun CommonTitleBar(
@@ -96,7 +117,8 @@ fun CommonTitleBar(
                 .padding(vertical = textVerticalPadding),
             text = stringResource(id = titleResId),
             fontSize = 22.sp,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Bold
         )
 
         rightIconResId?.let {
