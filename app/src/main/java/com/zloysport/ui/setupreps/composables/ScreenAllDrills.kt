@@ -9,32 +9,48 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.zloysport.R
 import com.zloysport.ui.CommonViewModel
 import com.zloysport.ui.setupreps.composables.common.CommonActionButton
 import com.zloysport.ui.setupreps.composables.common.CommonTitleBar
 
 @Composable
-fun ScreenAllDrills(viewModel: CommonViewModel) {
+fun ScreenAllDrills(
+    viewModel: CommonViewModel,
+    navController: NavController
+) {
     Column(
         modifier = Modifier.fillMaxSize(),
     ) {
-        CommonTitleBar(titleResId = R.string.all_drills_title)
-        AllDrillsContent(viewModel = viewModel)
+        CommonTitleBar(
+            leftIconResId = R.drawable.ic_back,
+            rightIconResId = R.drawable.ic_close,
+            titleResId = R.string.all_drills_title
+        )
+        AllDrillsContent(
+            viewModel = viewModel,
+            navController = navController
+        )
     }
 }
 
 @Composable
-private fun AllDrillsContent(viewModel: CommonViewModel) {
+private fun AllDrillsContent(
+    viewModel: CommonViewModel,
+    navController: NavController
+) {
     if (viewModel.haveDrills) {
         HaveDrillsState()
     } else {
-        EmptyStateDrills()
+        EmptyStateDrills(navController = navController)
     }
 }
 
 @Composable
-private fun EmptyStateDrills() {
+private fun EmptyStateDrills(
+    navController: NavController
+) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -51,7 +67,10 @@ private fun EmptyStateDrills() {
                 textAlign = TextAlign.Center
             )
 
-            CommonActionButton(textResourceId = R.string.create_drill_action)
+            CommonActionButton(
+                textResourceId = R.string.create_drill_action,
+                onClick = { navController.navigate("set_drill_name")}
+            )
         }
     }
 }

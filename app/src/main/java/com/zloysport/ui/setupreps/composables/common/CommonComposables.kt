@@ -2,11 +2,14 @@ package com.zloysport.ui.setupreps.composables.common
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,13 +64,19 @@ fun CommonConfirmButton(@StringRes textResourceId: Int) {
         )
     }
 }
+
 @Composable
-fun CommonActionButton(@StringRes textResourceId: Int) {
+fun CommonActionButton(
+    @StringRes textResourceId: Int,
+    onClick: () -> Unit
+) {
     Button(
         modifier = Modifier
             .padding(8.dp)
             .clip(shape = RoundedCornerShape(corner = CornerSize(8.dp))),
-        onClick = { },
+        onClick = {
+            onClick()
+        },
         colors = ButtonDefaults.buttonColors(backgroundColor = MainBlue)
     ) {
         Text(
@@ -100,7 +109,8 @@ fun CommonTitleBar(
         val textStartPadding = if (leftIconResId == null) iconAreaSize else 0.dp
         val textEndPadding = if (rightIconResId == null) iconAreaSize else 0.dp
 
-        val textVerticalPadding = if (leftIconResId == null && rightIconResId == null) iconAreaSize / 3 else 0.dp
+        val textVerticalPadding =
+            if (leftIconResId == null && rightIconResId == null) iconAreaSize / 3 else 0.dp
 
         leftIconResId?.let {
             CommonRoundIconButton(
@@ -124,7 +134,7 @@ fun CommonTitleBar(
         rightIconResId?.let {
             CommonRoundIconButton(
                 modifier = Modifier,
-                areaSize = 60.dp,
+                areaSize = iconAreaSize,
                 iconRes = it
             )
         }
@@ -140,12 +150,17 @@ private fun CommonRoundIconButton(
     Box(
         modifier = modifier
             .size(areaSize)
-            .clip(CircleShape),
+            .clip(CircleShape)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = rememberRipple(),
+                onClick = {},
+            ),
         contentAlignment = Alignment.Center
     ) {
         Icon(
             modifier = modifier
-                .size(areaSize / 1.5f),
+                .size(areaSize / 2f),
             painter = painterResource(id = iconRes),
             contentDescription = "",
         )
