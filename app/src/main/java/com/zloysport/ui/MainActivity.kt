@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.zloysport.ui.setupreps.composables.ScreenAllDrills
+import com.zloysport.ui.setupreps.composables.ScreenDrill
 import com.zloysport.ui.setupreps.composables.ScreenEnterTrainingName
 
 class MainActivity : ComponentActivity() {
@@ -17,7 +18,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
-            NavHost(navController = navController, startDestination = "all_drills") {
+            NavHost(navController = navController, startDestination = "drill") {
                 composable("all_drills") {
                     ScreenAllDrills(
                         viewModel = commonViewModel,
@@ -25,6 +26,7 @@ class MainActivity : ComponentActivity() {
                     )
                 }
                 composable("set_drill_name") { ScreenEnterTrainingName() }
+                composable("drill") { ScreenDrill() }
             }
         }
     }
