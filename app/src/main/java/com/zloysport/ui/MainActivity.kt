@@ -31,3 +31,5 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
+const val LogTag = "GlobalTag"
