@@ -1,8 +1,8 @@
 package com.zloysport.ui.setupreps.composables
 
-import android.content.Context
 import android.graphics.Paint
 import android.util.Log
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -42,29 +42,29 @@ import kotlin.math.atan2
 @Composable
 fun ScreenDrill() {
     Column {
-        DrillInfo(
-            DrillInfo(
-                listOf(
-                    Range(1, true),
-                    Range(10, false),
-                    Range(200, false),
-                    Range(999, false),
-                    Range(5, false),
-                    Range(67, false),
-                    Range(67, false),
-                    Range(165, false),
-                    Range(28, true),
-                    Range(29, false),
-                    Range(162, true),
-                    Range(271, false),
-                    Range(63, true),
-                    Range(29, false)
-                )
-            )
-        )
+//        DrillInfo(
+//            DrillInfo(
+//                listOf(
+//                    Range(1, true),
+//                    Range(10, false),
+//                    Range(200, false),
+//                    Range(999, false),
+//                    Range(5, false),
+//                    Range(67, false),
+//                    Range(67, false),
+//                    Range(165, false),
+//                    Range(28, true),
+//                    Range(29, false),
+//                    Range(162, true),
+//                    Range(271, false),
+//                    Range(63, true),
+//                    Range(29, false)
+//                )
+//            )
+//        )
         RangeInfo(
             Range(
-                100,
+                1,
                 false
             )
         )
@@ -111,6 +111,10 @@ fun RangeInfo(range: Range) {
     var isInitial by remember { mutableStateOf(true) }
 
     var handOffset by remember { mutableStateOf(Offset(0f, 0f)) }
+
+    var currentHandAngle by remember { mutableStateOf(0f) }
+
+    val handAngle by animateFloatAsState(targetValue = currentHandAngle)
 
     var outSideOffset by remember { mutableStateOf(Offset(0f, 0f)) }
 
@@ -219,37 +223,39 @@ fun RangeInfo(range: Range) {
 
                                     val currentAngle = currentOffsets.angle
 
-                                    val listOfKeys = LinkedList<Double>()
-                                    listOfKeys.addAll(anglesList.keys)
+                                    handOffset = currentOffsets.handCenterOffset
 
-                                    val iterator = listOfKeys.iterator()
-
-                                    var findAngle = 0.0
-
-                                    while (iterator.hasNext()) {
-                                        val current = iterator.next()
-                                        val diff = currentAngle - current
-
-                                        if (diff < oneAngle) {
-                                            if (diff <= oneAngle / 2.0) {
-                                                findAngle = current
-                                            } else {
-                                                findAngle = iterator.next()
-                                            }
-                                            break
-                                        }
-                                    }
-
-                                    anglesList[findAngle]?.let {
-                                        currentAction = it
-                                    }
-
-                                    val handY = center.y - Math.sin(findAngle) * radius
-                                    val handX = center.x - Math.cos(findAngle) * radius
+//                                    val listOfKeys = LinkedList<Double>()
+//                                    listOfKeys.addAll(anglesList.keys)
+//
+//                                    val iterator = listOfKeys.iterator()
+//
+//                                    var findAngle = 0.0
+//
+//                                    while (iterator.hasNext()) {
+//                                        val current = iterator.next()
+//                                        val diff = currentAngle - current
+//
+//                                        if (diff < oneAngle) {
+//                                            if (diff <= oneAngle / 2.0) {
+//                                                findAngle = current
+//                                            } else {
+//                                                findAngle = iterator.next()
+//                                            }
+//                                            break
+//                                        }
+//                                    }
+//
+//                                    anglesList[findAngle]?.let {
+//                                        currentAction = it
+//                                    }
+//
+//                                    val handY = center.y - Math.sin(findAngle) * radius
+//                                    val handX = center.x - Math.cos(findAngle) * radius
+//
+//                                    handOffset = Offset(handX.toFloat(), handY.toFloat())
 
                                     outSideOffset = currentOffsets.handOutSideOffset
-
-                                    handOffset = Offset(handX.toFloat(), handY.toFloat())
 
                                     trueOffsets = list
                                 } else {
@@ -332,7 +338,7 @@ fun RangeInfo(range: Range) {
                         )
                     }
 
-                } else if ( range.count < MEDIUM_SIZE) {
+                } else if (range.count < MEDIUM_SIZE) {
                     if (range.count == action || (action % MEDIUM_STEP == 0 && (range.count - action) >= MEDIUM_STEP / 2.0)) {
                         drawLine(
                             Color.Black,
@@ -450,13 +456,13 @@ fun RangeInfo(range: Range) {
 //                )
 //            }
 //
-            for (offset in falseOffsets) {
-                drawCircle(
-                    color = Color.Black,
-                    radius = 8f,
-                    center = offset
-                )
-            }
+//            for (offset in falseOffsets) {
+//                drawCircle(
+//                    color = Color.Black,
+//                    radius = 8f,
+//                    center = offset
+//                )
+//            }
 
 //            drawIntoCanvas {
 //                it.nativeCanvas.drawText(
@@ -656,6 +662,50 @@ private fun getDrawOffset(
     )
 }
 
+private fun getAnimatedOffset(
+    anglesList: Map<Double, Int>,
+    currentAngle: Double,
+    oneAngle: Double,
+    center: Offset,
+    radius: Float,
+): AnimatedData {
+    val listOfKeys = LinkedList<Double>()
+    listOfKeys.addAll(anglesList.keys)
+
+    val iterator = listOfKeys.iterator()
+
+    var findAngle = 0.0
+
+    while (iterator.hasNext()) {
+        val current = iterator.next()
+        val diff = currentAngle - current
+
+        if (diff < oneAngle) {
+            if (diff <= oneAngle / 2.0) {
+                findAngle = current
+            } else {
+                findAngle = iterator.next()
+            }
+            break
+        }
+    }
+
+    var currentAction: Int = -1
+    anglesList[findAngle]?.let {
+        currentAction = it
+    }
+
+    val handY = center.y - Math.sin(findAngle) * radius
+    val handX = center.x - Math.cos(findAngle) * radius
+
+    val handOffset = Offset(handX.toFloat(), handY.toFloat())
+
+    return AnimatedData(
+        handOffset,
+        currentAction
+    )
+}
+
 data class DrillInfo(
     val rangeList: List<Range>
 )
@@ -669,6 +719,11 @@ data class CurrentOffsets(
     val handCenterOffset: Offset,
     val handOutSideOffset: Offset,
     val angle: Double
+)
+
+data class AnimatedData(
+    val handOffset: Offset,
+    val action: Int
 )
 
 const val SMALL_SIZE = 20
