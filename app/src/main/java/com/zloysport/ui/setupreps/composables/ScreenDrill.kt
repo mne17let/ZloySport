@@ -2,11 +2,12 @@ package com.zloysport.ui.setupreps.composables
 
 import android.graphics.Paint
 import android.util.Log
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -32,7 +33,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zloysport.ui.LogTag
-import com.zloysport.ui.MainActivity
 import com.zloysport.ui.theme.*
 import java.lang.Math.*
 import java.util.*
@@ -113,8 +113,6 @@ fun RangeInfo(range: Range) {
     var handOffset by remember { mutableStateOf(Offset(0f, 0f)) }
 
     var currentHandAngle by remember { mutableStateOf(0f) }
-
-    val handAngle by animateFloatAsState(targetValue = currentHandAngle)
 
     var outSideOffset by remember { mutableStateOf(Offset(0f, 0f)) }
 
@@ -225,41 +223,51 @@ fun RangeInfo(range: Range) {
 
                                     handOffset = currentOffsets.handCenterOffset
 
-//                                    val listOfKeys = LinkedList<Double>()
-//                                    listOfKeys.addAll(anglesList.keys)
-//
-//                                    val iterator = listOfKeys.iterator()
-//
-//                                    var findAngle = 0.0
-//
-//                                    while (iterator.hasNext()) {
-//                                        val current = iterator.next()
-//                                        val diff = currentAngle - current
-//
-//                                        if (diff < oneAngle) {
-//                                            if (diff <= oneAngle / 2.0) {
-//                                                findAngle = current
-//                                            } else {
-//                                                findAngle = iterator.next()
-//                                            }
-//                                            break
-//                                        }
-//                                    }
-//
-//                                    anglesList[findAngle]?.let {
-//                                        currentAction = it
-//                                    }
-//
-//                                    val handY = center.y - Math.sin(findAngle) * radius
-//                                    val handX = center.x - Math.cos(findAngle) * radius
-//
-//                                    handOffset = Offset(handX.toFloat(), handY.toFloat())
+                                    val listOfKeys = LinkedList<Double>()
+                                    listOfKeys.addAll(anglesList.keys)
+
+                                    val iterator = listOfKeys.iterator()
+
+                                    var findAngle = 0.0
+
+                                    while (iterator.hasNext()) {
+                                        val current = iterator.next()
+                                        val diff = currentAngle - current
+
+                                        if (diff < oneAngle) {
+                                            if (diff <= oneAngle / 2.0) {
+                                                findAngle = current
+                                            } else {
+                                                findAngle = iterator.next()
+                                            }
+                                            break
+                                        }
+                                    }
+
+                                    anglesList[findAngle]?.let {
+                                        currentAction = it
+                                    }
+
+                                    val handY = center.y - Math.sin(findAngle) * radius
+                                    val handX = center.x - Math.cos(findAngle) * radius
+
+                                    handOffset = Offset(handX.toFloat(), handY.toFloat())
 
                                     outSideOffset = currentOffsets.handOutSideOffset
 
                                     trueOffsets = list
                                 } else {
                                     val list = mutableListOf<Offset>()
+
+                                    val currentOffsets = getDrawOffset(
+                                        handOffset,
+                                        radius,
+                                        center,
+                                        startOffset,
+                                        oneAngle
+                                    )
+
+                                    outSideOffset = currentOffsets.handOutSideOffset
 
 //                                    list.addAll(falseOffsets)
 //                                    list.add(change.position)
@@ -274,6 +282,132 @@ fun RangeInfo(range: Range) {
                     )
 
 
+                }
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onPress = {
+                            awaitRelease()
+                            isHit = false
+                        },
+                        onLongPress = { touchOffset ->
+                            if (isHitHand(
+                                    handOffset,
+                                    touchOffset
+                                )
+                            ) {
+                                isHit = true
+                                outSideOffset = getDrawOffset(
+                                    touchOffset,
+                                    radius,
+                                    center,
+                                    startOffset,
+                                    oneAngle
+                                ).handOutSideOffset
+                            }
+                        }
+                    )
+                }
+                .pointerInput(Unit) {
+                    detectDragGesturesAfterLongPress(
+                        onDragStart = { touch ->
+                            Log.d(LogTag, "Драг стартовал в точке $touch ||")
+
+                            isHit = isHitHand(handOffset, touch)
+
+                            if (!isHit) {
+                                val list = mutableListOf<Offset>()
+                                list.addAll(falseOffsets)
+                                list.add(touch)
+
+                                falseOffsets = list
+                            }
+
+                        },
+                        onDrag = { change, offset ->
+                            if (isHit) {
+                                if (isOnTheLine(
+                                        change.position,
+                                        radius,
+                                        center,
+                                        misStep = 100f
+                                    )
+                                ) {
+                                    val list = mutableListOf<Offset>()
+
+                                    list.addAll(trueOffsets)
+                                    list.add(change.position)
+
+                                    isInitial = false
+
+                                    val currentOffsets = getDrawOffset(
+                                        change.position,
+                                        radius,
+                                        center,
+                                        startOffset,
+                                        oneAngle
+                                    )
+
+                                    val currentAngle = currentOffsets.angle
+
+                                    handOffset = currentOffsets.handCenterOffset
+
+                                    val listOfKeys = LinkedList<Double>()
+                                    listOfKeys.addAll(anglesList.keys)
+
+                                    val iterator = listOfKeys.iterator()
+
+                                    var findAngle = 0.0
+
+                                    while (iterator.hasNext()) {
+                                        val current = iterator.next()
+                                        val diff = currentAngle - current
+
+                                        if (diff < oneAngle) {
+                                            if (diff <= oneAngle / 2.0) {
+                                                findAngle = current
+                                            } else {
+                                                findAngle = iterator.next()
+                                            }
+                                            break
+                                        }
+                                    }
+
+                                    anglesList[findAngle]?.let {
+                                        currentAction = it
+                                    }
+
+                                    val handY = center.y - Math.sin(findAngle) * radius
+                                    val handX = center.x - Math.cos(findAngle) * radius
+
+                                    handOffset = Offset(handX.toFloat(), handY.toFloat())
+
+                                    outSideOffset = currentOffsets.handOutSideOffset
+
+                                    trueOffsets = list
+                                } else {
+                                    val list = mutableListOf<Offset>()
+
+                                    val currentOffsets = getDrawOffset(
+                                        handOffset,
+                                        radius,
+                                        center,
+                                        startOffset,
+                                        oneAngle
+                                    )
+
+                                    outSideOffset = currentOffsets.handOutSideOffset
+
+//                                    list.addAll(falseOffsets)
+//                                    list.add(change.position)
+
+//                                    falseOffsets = list
+                                }
+                            }
+                        },
+                        onDragEnd = {
+                            isHit = false
+                        }
+                    )
                 }
 //                .background(DarkestBlue)
         ) {
