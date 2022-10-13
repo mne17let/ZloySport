@@ -11,3 +11,5 @@ val LightGreen = Color(0xFFB2EC9E)
 val DarkGreen = Color(0xFF368B00)
 
 val DarkGray = Color(0xFF8C8F8B)
+
+val RippleGray = Color(0x80434642)

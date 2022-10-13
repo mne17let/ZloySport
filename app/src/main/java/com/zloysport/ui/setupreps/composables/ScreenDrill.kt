@@ -2,6 +2,7 @@ package com.zloysport.ui.setupreps.composables
 
 import android.graphics.Paint
 import android.util.Log
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -114,6 +115,9 @@ fun RangeInfo(range: Range) {
 
     var currentHandAngle by remember { mutableStateOf(0f) }
 
+    var rippleRadius by remember { mutableStateOf(0f) }
+    val animationRippleRadius = animateFloatAsState(targetValue = rippleRadius)
+
     var outSideOffset by remember { mutableStateOf(Offset(0f, 0f)) }
 
     var currentAction by remember { mutableStateOf(0) }
@@ -149,37 +153,6 @@ fun RangeInfo(range: Range) {
                 .padding(24.dp)
                 .size(250.dp)
                 .pointerInput(Unit) {
-//                    detectTapGestures(onPress = {
-//                        Log.d(LogTag, "RangeInfo: нажат $it || у точки координаты == $handOffset")
-//                        if (isHitHand(handOffset, it)) {
-//                            touchOffset = it
-//                            isHit = true
-//                            Toast
-//                                .makeText(context, "Попал", Toast.LENGTH_SHORT)
-//                                .show()
-//
-//                            val newList = mutableListOf<Offset>()
-//
-//                            newList.addAll(trueOffsets)
-//                            newList.add(it)
-//
-//                            trueOffsets = newList
-//                        } else {
-//                            touchOffset = it
-//                            isHit = false
-//                            Toast
-//                                .makeText(context, "Мимо", Toast.LENGTH_SHORT)
-//                                .show()
-//
-//                            val newList = mutableListOf<Offset>()
-//
-//                            newList.addAll(falseOffsets)
-//                            newList.add(it)
-//
-//                            falseOffsets = newList
-//                        }
-//                    })
-
                     detectDragGestures(
                         onDragStart = { touch ->
                             Log.d(LogTag, "Драг стартовал в точке $touch ||")
@@ -277,6 +250,7 @@ fun RangeInfo(range: Range) {
                             }
                         },
                         onDragEnd = {
+                            rippleRadius = 0f
                             isHit = false
                         }
                     )
@@ -286,8 +260,11 @@ fun RangeInfo(range: Range) {
                 .pointerInput(Unit) {
                     detectTapGestures(
                         onPress = {
+                            rippleRadius = 60f
                             awaitRelease()
                             isHit = false
+
+                            rippleRadius = 0f
                         },
                         onLongPress = { touchOffset ->
                             if (isHitHand(
@@ -405,6 +382,7 @@ fun RangeInfo(range: Range) {
                             }
                         },
                         onDragEnd = {
+                            rippleRadius = 0f
                             isHit = false
                         }
                     )
@@ -539,6 +517,26 @@ fun RangeInfo(range: Range) {
                 radius = 60f,
                 center = if (isHit) outSideOffset else handOffset
             )
+
+            if (!isHit) {
+                drawCircle(
+                    color = Color.Cyan,
+                    radius = 60f,
+                    center = handOffset
+                )
+
+                drawCircle(
+                    color = RippleGray,
+                    radius = if (rippleRadius == 0f) 0f else animationRippleRadius.value,
+                    center = handOffset
+                )
+            } else {
+                drawCircle(
+                    color = Color.Red,
+                    radius = 60f,
+                    center = outSideOffset
+                )
+            }
 
             val text = currentAction
 
