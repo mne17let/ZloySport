@@ -3,6 +3,7 @@ package com.zloysport.ui.setupreps.composables
 import android.graphics.Paint
 import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,6 +30,7 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zloysport.ui.LogTag
@@ -114,17 +116,26 @@ fun RangeInfo(range: Range) {
     val shadowRadiusNull = 1f
     val rippleRadiusNull = 0f
 
+    val canvasSize = 250.dp
+
+    val outSidePaddingConst = 100f
+
     var isInitial by remember { mutableStateOf(true) }
 
     var handOffset by remember { mutableStateOf(Offset(0f, 0f)) }
 
-    var currentHandAngle by remember { mutableStateOf(0f) }
-
     var rippleRadius by remember { mutableStateOf(0f) }
-    val animationRippleRadius = animateFloatAsState(targetValue = rippleRadius)
+    val animationRippleRadius = animateFloatAsState(
+        targetValue = rippleRadius,
+        animationSpec = tween(
+            durationMillis = 100
+        )
+    )
 
     var shadowRadius by remember { mutableStateOf(75f) }
-    val animationShadowRadius = animateFloatAsState(targetValue = shadowRadius)
+    val animationShadowRadius = animateFloatAsState(
+        targetValue = shadowRadius
+    )
 
     var outSideRadius by remember { mutableStateOf(60f) }
     val animationOutSideRadius = animateFloatAsState(targetValue = outSideRadius)
@@ -134,10 +145,6 @@ fun RangeInfo(range: Range) {
     var currentAction by remember { mutableStateOf(0) }
 
     var startOffset by remember { mutableStateOf(Offset(0f, 0f)) }
-
-    var falseOffsets by remember { mutableStateOf(listOf<Offset>()) }
-
-    var trueOffsets by remember { mutableStateOf(listOf<Offset>()) }
 
     var isHit by remember { mutableStateOf(false) }
 
@@ -155,37 +162,21 @@ fun RangeInfo(range: Range) {
         }
     }
 
-    var mistakeStep by remember { mutableStateOf(radius / 2) }
-
-
-
     Box(
         modifier = Modifier.fillMaxSize()
-//            .background(Color.Magenta)
+            .padding(Dp(60f))
         ,
         contentAlignment = Alignment.Center
     ) {
         Canvas(
             modifier = Modifier
-                .padding(24.dp)
-//                .matchParentSize()
-                .size(250.dp)
-//                .background(Color.Black)
+                .size(canvasSize)
                 .pointerInput(Unit) {
                     detectDragGestures(
                         onDragStart = { touch ->
                             Log.d(LogTag, "Драг стартовал в точке $touch ||")
 
                             isHit = isHitHand(handOffset, touch)
-
-                            if (!isHit) {
-                                val list = mutableListOf<Offset>()
-                                list.addAll(falseOffsets)
-                                list.add(touch)
-
-                                falseOffsets = list
-                            }
-
                         },
                         onDrag = { change, offset ->
                             if (isHit) {
@@ -196,11 +187,6 @@ fun RangeInfo(range: Range) {
                                         misStep = radius
                                     )
                                 ) {
-                                    val list = mutableListOf<Offset>()
-
-                                    list.addAll(trueOffsets)
-                                    list.add(change.position)
-
                                     isInitial = false
 
                                     val currentOffsets = getDrawOffset(
@@ -208,7 +194,8 @@ fun RangeInfo(range: Range) {
                                         radius,
                                         center,
                                         startOffset,
-                                        oneAngle
+                                        oneAngle,
+                                        outSidePaddingConst
                                     )
 
                                     val currentAngle = currentOffsets.angle
@@ -246,25 +233,17 @@ fun RangeInfo(range: Range) {
                                     handOffset = Offset(handX.toFloat(), handY.toFloat())
 
                                     outSideOffset = currentOffsets.handOutSideOffset
-
-                                    trueOffsets = list
                                 } else {
-                                    val list = mutableListOf<Offset>()
-
                                     val currentOffsets = getDrawOffset(
                                         handOffset,
                                         radius,
                                         center,
                                         startOffset,
-                                        oneAngle
+                                        oneAngle,
+                                        outSidePaddingConst
                                     )
 
                                     outSideOffset = currentOffsets.handOutSideOffset
-
-//                                    list.addAll(falseOffsets)
-//                                    list.add(change.position)
-
-//                                    falseOffsets = list
                                 }
                             }
                         },
@@ -308,7 +287,8 @@ fun RangeInfo(range: Range) {
                                     radius,
                                     center,
                                     startOffset,
-                                    oneAngle
+                                    oneAngle,
+                                    outSidePaddingConst
                                 ).handOutSideOffset
                             }
 
@@ -323,15 +303,6 @@ fun RangeInfo(range: Range) {
                             Log.d(LogTag, "Драг стартовал в точке $touch ||")
 
                             isHit = isHitHand(handOffset, touch)
-
-                            if (!isHit) {
-                                val list = mutableListOf<Offset>()
-                                list.addAll(falseOffsets)
-                                list.add(touch)
-
-                                falseOffsets = list
-                            }
-
                         },
                         onDrag = { change, offset ->
                             if (isHit) {
@@ -342,11 +313,6 @@ fun RangeInfo(range: Range) {
                                         misStep = radius
                                     )
                                 ) {
-                                    val list = mutableListOf<Offset>()
-
-                                    list.addAll(trueOffsets)
-                                    list.add(change.position)
-
                                     isInitial = false
 
                                     val currentOffsets = getDrawOffset(
@@ -354,12 +320,11 @@ fun RangeInfo(range: Range) {
                                         radius,
                                         center,
                                         startOffset,
-                                        oneAngle
+                                        oneAngle,
+                                        outSidePaddingConst
                                     )
 
                                     val currentAngle = currentOffsets.angle
-
-                                    handOffset = currentOffsets.handCenterOffset
 
                                     val listOfKeys = LinkedList<Double>()
                                     listOfKeys.addAll(anglesList.keys)
@@ -392,25 +357,17 @@ fun RangeInfo(range: Range) {
                                     handOffset = Offset(handX.toFloat(), handY.toFloat())
 
                                     outSideOffset = currentOffsets.handOutSideOffset
-
-                                    trueOffsets = list
                                 } else {
-                                    val list = mutableListOf<Offset>()
-
                                     val currentOffsets = getDrawOffset(
                                         handOffset,
                                         radius,
                                         center,
                                         startOffset,
-                                        oneAngle
+                                        oneAngle,
+                                        outSidePaddingConst
                                     )
 
                                     outSideOffset = currentOffsets.handOutSideOffset
-
-//                                    list.addAll(falseOffsets)
-//                                    list.add(change.position)
-
-//                                    falseOffsets = list
                                 }
                             }
                         },
@@ -421,20 +378,19 @@ fun RangeInfo(range: Range) {
                         }
                     )
                 }
-//                .background(DarkestBlue)
         ) {
 
             android.util.Log.d(LogTag, "Рекомпозиция канаваса. Координаты ручки = $handOffset")
             val strokeWidth = 20f
-            val topLeftX = (size.width / 2f) - (size.minDimension / 2f) + (strokeWidth / 2)
-            val topLeftY = (size.height / 2f) - (size.minDimension / 2f) + (strokeWidth / 2)
+            val topLeftX = (size.width / 2f) - (size.minDimension / 2f) + handRadiusConst
+            val topLeftY = (size.height / 2f) - (size.minDimension / 2f) + handRadiusConst
             val topLeft = Offset(topLeftX, topLeftY)
             drawArc(
                 color = DarkGray,
                 startAngle = 0f,
                 sweepAngle = -180f,
                 useCenter = false,
-                size = Size(size.minDimension - strokeWidth, size.minDimension - strokeWidth),
+                size = Size(size.minDimension - handRadiusConst * 2, size.minDimension - handRadiusConst * 2),
                 alpha = 1f,
                 style = Stroke(width = strokeWidth, cap = StrokeCap.Round),
                 topLeft = topLeft
@@ -442,9 +398,9 @@ fun RangeInfo(range: Range) {
 
             center = Offset(size.width / 2, size.height / 2)
 
-            radius = size.minDimension / 2 - strokeWidth / 2
-            val longRadius = size.minDimension / 2 + 16 - strokeWidth / 2
-            val shortRadius = size.minDimension / 2 - 16 - strokeWidth / 2
+            radius = size.minDimension / 2 - handRadiusConst
+            val longRadius = radius + 16
+            val shortRadius = radius - 16
 
             var angle = 0.0
 
@@ -546,12 +502,6 @@ fun RangeInfo(range: Range) {
                 outSideOffset = Offset(center.x - radius, center.y) - Offset(100f, 0f)
             }
 
-//            drawCircle(
-//                color = if (isHit) Color.Red else Color.Cyan,
-//                radius = 60f,
-//                center = if (isHit) outSideOffset else handOffset
-//            )
-
             if (!isHit) {
 
                 drawCircle(
@@ -568,7 +518,7 @@ fun RangeInfo(range: Range) {
                 )
 
                 drawCircle(
-                    color = Color.Cyan,
+                    color = LightBlue,
                     radius = handRadiusConst,
                     center = handOffset
                 )
@@ -600,8 +550,6 @@ fun RangeInfo(range: Range) {
             if (isHit) {
                 drawIntoCanvas {
                     it.nativeCanvas.drawText(
-//                    "${angle * 180 / Math.PI}",
-//                    "${oneAngle * 180 / PI} || ${oneAngle * 180 / PI * 180}",
                         text.toString(),
                         outSideOffset.x - offsetDiff,
                         outSideOffset.y + 12f,
@@ -614,8 +562,6 @@ fun RangeInfo(range: Range) {
             } else {
                 drawIntoCanvas {
                     it.nativeCanvas.drawText(
-//                    "${angle * 180 / Math.PI}",
-//                    "${oneAngle * 180 / PI} || ${oneAngle * 180 / PI * 180}",
                         text.toString(),
                         handOffset.x - offsetDiff,
                         handOffset.y + 12f,
@@ -627,49 +573,11 @@ fun RangeInfo(range: Range) {
                 }
             }
 
-
-//            for (offset in trueOffsets) {
-//                drawCircle(
-//                    color = Color.Red,
-//                    radius = 8f,
-//                    center = offset
-//                )
-//            }
-//
-//            for (offset in falseOffsets) {
-//                drawCircle(
-//                    color = Color.Black,
-//                    radius = 8f,
-//                    center = offset
-//                )
-//            }
-
-//            drawIntoCanvas {
-//                it.nativeCanvas.drawText(
-////                    "${angle * 180 / Math.PI}",
-////                    "${oneAngle * 180 / PI} || ${oneAngle * 180 / PI * 180}",
-//                    "|| ${oneAngle * 180 / PI * range.count}",
-//                    size.width / 2,
-//                    size.height / 2,
-//                    Paint().apply {
-//                        textSize = 24f
-//                    }
-//                )
-//            }
-
             drawLine(
                 color = Color.Black,
                 start = center,
                 end = handOffset
             )
-
-//            if (touchOffset != Offset(0f, 0f)) {
-//                drawCircle(
-//                    color = if (isHit) Color.Black else Color.Red,
-//                    radius = 5f,
-//                    center = touchOffset
-//                )
-//            }
         }
 
         Button(
@@ -687,85 +595,6 @@ fun RangeInfo(range: Range) {
             )
         }
     }
-}
-
-@Composable
-private fun RangeInfoOld() {
-    var radius by remember {
-        mutableStateOf(0f)
-    }
-
-    var shapeCenter by remember {
-        mutableStateOf(Offset.Zero)
-    }
-
-    var handleCenter by remember {
-        mutableStateOf(Offset.Zero)
-    }
-
-    var angle by remember {
-        mutableStateOf(20.0)
-    }
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(DarkestBlue),
-        contentAlignment = Alignment.Center
-    ) {
-        Canvas(
-            modifier = Modifier
-                .background(LightBlue)
-                .fillMaxSize()
-                .pointerInput(Unit) {
-                    detectDragGestures { change, dragAmount ->
-                        handleCenter += dragAmount
-
-                        angle = getRotationAngle(handleCenter, shapeCenter)
-                        change.consumeAllChanges()
-                    }
-                }
-                .padding(16.dp)
-
-        ) {
-            shapeCenter = center
-
-            radius = size.minDimension / 2
-
-            val x = (shapeCenter.x + cos(Math.toRadians(angle)) * radius).toFloat()
-            val y = (shapeCenter.y + sin(Math.toRadians(angle)) * radius).toFloat()
-
-            handleCenter = Offset(x, y)
-
-            drawCircle(
-                color = Color.Black.copy(alpha = 0.10f),
-                style = Stroke(20f),
-                radius = radius
-            )
-            drawArc(
-                size = Size(radius * 2, radius * 2),
-                color = Color.Yellow,
-                startAngle = 0f,
-                sweepAngle = angle.toFloat(),
-                useCenter = false,
-                style = Stroke(20f),
-            )
-
-            drawCircle(color = Color.Cyan, center = handleCenter, radius = 60f)
-        }
-    }
-}
-
-private fun getRotationAngle(currentPosition: Offset, center: Offset): Double {
-    val (dx, dy) = currentPosition - center
-    val theta = atan2(dy, dx).toDouble()
-
-    var angle = Math.toDegrees(theta)
-
-    if (angle < 0) {
-        angle += 360.0
-    }
-    return angle
 }
 
 private fun isHitHand(handCenterOffset: Offset, touchOffset: Offset): Boolean {
@@ -801,7 +630,8 @@ private fun getDrawOffset(
     radius: Float,
     center: Offset,
     startOffset: Offset,
-    oneAngle: Double
+    oneAngle: Double,
+    outSidePadding: Float
 ): CurrentOffsets {
 
     val isRight = touchOffset.x - center.x >= 0
@@ -833,7 +663,7 @@ private fun getDrawOffset(
     }
 
     val radX = center.x - radius * cos
-    val outSideRadius = radius + 100
+    val outSideRadius = radius + outSidePadding
     val radXOutside = center.x - outSideRadius * cos
     val radXLong = radX - center.x
     val radXLongOutSide = radXOutside - center.x

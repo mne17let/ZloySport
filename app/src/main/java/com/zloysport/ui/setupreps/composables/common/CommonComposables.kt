@@ -56,7 +56,12 @@ fun CommonConfirmButton(@StringRes textResourceId: Int) {
             .padding(bottom = 32.dp)
             .clip(shape = RoundedCornerShape(corner = CornerSize(16.dp))),
         onClick = { },
-        colors = ButtonDefaults.buttonColors(backgroundColor = Blue)
+        colors = ButtonDefaults.buttonColors(backgroundColor = Blue),
+        elevation = ButtonDefaults.elevation(
+            defaultElevation = 6.dp,
+            pressedElevation = 8.dp,
+            disabledElevation = 0.dp
+        )
     ) {
         Text(
             modifier = Modifier
@@ -81,7 +86,12 @@ fun CommonActionButton(
         onClick = {
             onClick()
         },
-        colors = ButtonDefaults.buttonColors(backgroundColor = Blue)
+        colors = ButtonDefaults.buttonColors(backgroundColor = Blue),
+        elevation = ButtonDefaults.elevation(
+            defaultElevation = 6.dp,
+            pressedElevation = 8.dp,
+            disabledElevation = 0.dp
+        )
     ) {
         Text(
             modifier = Modifier
