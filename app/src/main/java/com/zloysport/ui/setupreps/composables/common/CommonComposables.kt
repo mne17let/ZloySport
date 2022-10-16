@@ -51,15 +51,15 @@ fun CommonTextField(
 fun CommonConfirmButton(@StringRes textResourceId: Int) {
     Button(
         modifier = Modifier
+            .clip(shape = RoundedCornerShape(corner = CornerSize(16.dp)))
             .fillMaxWidth()
             .padding(horizontal = 32.dp)
-            .padding(bottom = 32.dp)
-            .clip(shape = RoundedCornerShape(corner = CornerSize(16.dp))),
+            .padding(bottom = 32.dp),
         onClick = { },
         colors = ButtonDefaults.buttonColors(backgroundColor = Blue),
         elevation = ButtonDefaults.elevation(
-            defaultElevation = 6.dp,
-            pressedElevation = 8.dp,
+            defaultElevation = 10.dp,
+            pressedElevation = 0.dp,
             disabledElevation = 0.dp
         )
     ) {
@@ -81,15 +81,15 @@ fun CommonActionButton(
 ) {
     Button(
         modifier = Modifier
-            .padding(8.dp)
-            .clip(shape = RoundedCornerShape(corner = CornerSize(8.dp))),
+            .clip(shape = RoundedCornerShape(corner = CornerSize(8.dp)))
+            .padding(8.dp),
         onClick = {
             onClick()
         },
         colors = ButtonDefaults.buttonColors(backgroundColor = Blue),
         elevation = ButtonDefaults.elevation(
             defaultElevation = 6.dp,
-            pressedElevation = 8.dp,
+            pressedElevation = 0.dp,
             disabledElevation = 0.dp
         )
     ) {

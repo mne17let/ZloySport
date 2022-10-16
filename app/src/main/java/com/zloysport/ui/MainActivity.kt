@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
-            NavHost(navController = navController, startDestination = "drill") {
+            NavHost(navController = navController, startDestination = "all_drills") {
                 composable("all_drills") {
                     ScreenAllDrills(
                         viewModel = commonViewModel,
