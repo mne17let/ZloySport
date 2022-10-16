@@ -13,6 +13,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.*
@@ -22,12 +23,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.graphics.nativeCanvas
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
@@ -109,6 +107,13 @@ private fun DrillInfo(drillInfo: DrillInfo) {
 @Composable
 fun RangeInfo(range: Range) {
 
+    val handRadiusConst = 60f
+    val rippleRadiusConst = 60f
+    val shadowRadiusConst = 75f
+    val handRadiusNull = 0f
+    val shadowRadiusNull = 1f
+    val rippleRadiusNull = 0f
+
     var isInitial by remember { mutableStateOf(true) }
 
     var handOffset by remember { mutableStateOf(Offset(0f, 0f)) }
@@ -117,6 +122,12 @@ fun RangeInfo(range: Range) {
 
     var rippleRadius by remember { mutableStateOf(0f) }
     val animationRippleRadius = animateFloatAsState(targetValue = rippleRadius)
+
+    var shadowRadius by remember { mutableStateOf(75f) }
+    val animationShadowRadius = animateFloatAsState(targetValue = shadowRadius)
+
+    var outSideRadius by remember { mutableStateOf(60f) }
+    val animationOutSideRadius = animateFloatAsState(targetValue = outSideRadius)
 
     var outSideOffset by remember { mutableStateOf(Offset(0f, 0f)) }
 
@@ -144,14 +155,22 @@ fun RangeInfo(range: Range) {
         }
     }
 
+    var mistakeStep by remember { mutableStateOf(radius / 2) }
+
+
+
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize()
+//            .background(Color.Magenta)
+        ,
         contentAlignment = Alignment.Center
     ) {
         Canvas(
             modifier = Modifier
                 .padding(24.dp)
+//                .matchParentSize()
                 .size(250.dp)
+//                .background(Color.Black)
                 .pointerInput(Unit) {
                     detectDragGestures(
                         onDragStart = { touch ->
@@ -174,7 +193,7 @@ fun RangeInfo(range: Range) {
                                         change.position,
                                         radius,
                                         center,
-                                        misStep = 100f
+                                        misStep = radius
                                     )
                                 ) {
                                     val list = mutableListOf<Offset>()
@@ -250,8 +269,10 @@ fun RangeInfo(range: Range) {
                             }
                         },
                         onDragEnd = {
-                            rippleRadius = 0f
+                            rippleRadius = rippleRadiusNull
                             isHit = false
+
+                            shadowRadius = shadowRadiusConst
                         }
                     )
 
@@ -260,11 +281,20 @@ fun RangeInfo(range: Range) {
                 .pointerInput(Unit) {
                     detectTapGestures(
                         onPress = {
-                            rippleRadius = 60f
+                            if (isHitHand(
+                                    handOffset,
+                                    it
+                                )
+                            ) {
+                                rippleRadius = rippleRadiusConst
+                                shadowRadius = shadowRadiusNull
+                            }
+
                             awaitRelease()
                             isHit = false
 
-                            rippleRadius = 0f
+                            rippleRadius = rippleRadiusNull
+                            shadowRadius = shadowRadiusConst
                         },
                         onLongPress = { touchOffset ->
                             if (isHitHand(
@@ -274,13 +304,16 @@ fun RangeInfo(range: Range) {
                             ) {
                                 isHit = true
                                 outSideOffset = getDrawOffset(
-                                    touchOffset,
+                                    handOffset,
                                     radius,
                                     center,
                                     startOffset,
                                     oneAngle
                                 ).handOutSideOffset
                             }
+
+
+                            rippleRadius = rippleRadiusNull
                         }
                     )
                 }
@@ -306,7 +339,7 @@ fun RangeInfo(range: Range) {
                                         change.position,
                                         radius,
                                         center,
-                                        misStep = 100f
+                                        misStep = radius
                                     )
                                 ) {
                                     val list = mutableListOf<Offset>()
@@ -382,7 +415,8 @@ fun RangeInfo(range: Range) {
                             }
                         },
                         onDragEnd = {
-                            rippleRadius = 0f
+                            shadowRadius = shadowRadiusConst
+                            rippleRadius = rippleRadiusNull
                             isHit = false
                         }
                     )
@@ -411,7 +445,6 @@ fun RangeInfo(range: Range) {
             radius = size.minDimension / 2 - strokeWidth / 2
             val longRadius = size.minDimension / 2 + 16 - strokeWidth / 2
             val shortRadius = size.minDimension / 2 - 16 - strokeWidth / 2
-//            val oneAngle = (180 / range.count) * Math.PI / 180
 
             var angle = 0.0
 
@@ -510,30 +543,45 @@ fun RangeInfo(range: Range) {
             if (isInitial) {
                 handOffset = Offset(center.x - radius, center.y)
                 startOffset = Offset(center.x - radius, center.y)
+                outSideOffset = Offset(center.x - radius, center.y) - Offset(100f, 0f)
             }
 
-            drawCircle(
-                color = if (isHit) Color.Red else Color.Cyan,
-                radius = 60f,
-                center = if (isHit) outSideOffset else handOffset
-            )
+//            drawCircle(
+//                color = if (isHit) Color.Red else Color.Cyan,
+//                radius = 60f,
+//                center = if (isHit) outSideOffset else handOffset
+//            )
 
             if (!isHit) {
+
                 drawCircle(
-                    color = Color.Cyan,
-                    radius = 60f,
+                    brush = Brush.radialGradient(
+                        listOf(
+                            ShadowGrayAlpha50,
+                            Transparent
+                        ),
+                        center = handOffset,
+                        radius = animationShadowRadius.value
+                    ),
+                    radius = 75f,
                     center = handOffset
                 )
 
                 drawCircle(
-                    color = RippleGray,
+                    color = Color.Cyan,
+                    radius = handRadiusConst,
+                    center = handOffset
+                )
+
+                drawCircle(
+                    color = RippleGrayAlpha20,
                     radius = if (rippleRadius == 0f) 0f else animationRippleRadius.value,
                     center = handOffset
                 )
             } else {
                 drawCircle(
                     color = Color.Red,
-                    radius = 60f,
+                    radius = animationOutSideRadius.value,
                     center = outSideOffset
                 )
             }
@@ -622,6 +670,21 @@ fun RangeInfo(range: Range) {
 //                    center = touchOffset
 //                )
 //            }
+        }
+
+        Button(
+            modifier = Modifier
+                .size(50.dp)
+                .offset(
+                    10.dp,
+                    0.dp
+                )
+                .clip(CircleShape),
+            onClick = {}
+        ) {
+            Text(
+                text = "0"
+            )
         }
     }
 }
