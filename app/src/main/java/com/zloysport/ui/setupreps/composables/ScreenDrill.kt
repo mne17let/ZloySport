@@ -33,6 +33,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.zloysport.data.Drill
+import com.zloysport.data.Range
 import com.zloysport.ui.LogTag
 import com.zloysport.ui.theme.*
 import java.lang.Math.*
@@ -45,7 +47,7 @@ fun ScreenDrill() {
     Column {
 //        DrillInfo(
 //            DrillInfo(
-//                listOf(
+//                ranges = listOf(
 //                    Range(1, true),
 //                    Range(10, false),
 //                    Range(200, false),
@@ -73,7 +75,7 @@ fun ScreenDrill() {
 }
 
 @Composable
-private fun DrillInfo(drillInfo: DrillInfo) {
+private fun DrillInfo(drillInfo: Drill) {
     LazyRow(
         modifier = Modifier
             .padding(vertical = 20.dp)
@@ -730,15 +732,6 @@ private fun getAnimatedOffset(
         currentAction
     )
 }
-
-data class DrillInfo(
-    val rangeList: List<Range>
-)
-
-data class Range(
-    val count: Int,
-    val alreadyDone: Boolean
-)
 
 data class CurrentOffsets(
     val handCenterOffset: Offset,
