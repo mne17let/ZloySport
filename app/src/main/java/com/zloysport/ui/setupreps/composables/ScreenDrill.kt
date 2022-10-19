@@ -581,21 +581,6 @@ fun RangeInfo(range: Range) {
                 end = handOffset
             )
         }
-
-        Button(
-            modifier = Modifier
-                .size(50.dp)
-                .offset(
-                    10.dp,
-                    0.dp
-                )
-                .clip(CircleShape),
-            onClick = {}
-        ) {
-            Text(
-                text = "0"
-            )
-        }
     }
 }
 

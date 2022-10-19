@@ -8,14 +8,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.zloysport.R
+import com.zloysport.ui.CommonViewModel
 import com.zloysport.ui.setupreps.composables.common.CommonConfirmButton
 import com.zloysport.ui.setupreps.composables.common.CommonTextField
 import com.zloysport.ui.setupreps.composables.common.CommonTitleBar
 import com.zloysport.ui.theme.InfoSize
 
 @Composable
-fun ScreenEnterTrainingName() {
+fun ScreenEnterTrainingName(
+    viewModel: CommonViewModel,
+    navController: NavController
+) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween,
