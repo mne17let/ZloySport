@@ -1,4 +1,4 @@
-package com.zloysport.ui.setupreps.composables.common
+package com.zloysport.ui.composables.common
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -48,14 +48,17 @@ fun CommonTextField(
 }
 
 @Composable
-fun CommonConfirmButton(@StringRes textResourceId: Int) {
+fun CommonConfirmButton(
+    @StringRes textResourceId: Int,
+    onClick: () -> Unit
+) {
     Button(
         modifier = Modifier
             .clip(shape = RoundedCornerShape(corner = CornerSize(16.dp)))
             .fillMaxWidth()
             .padding(horizontal = 32.dp)
             .padding(bottom = 32.dp),
-        onClick = { },
+        onClick = onClick,
         colors = ButtonDefaults.buttonColors(backgroundColor = Blue),
         elevation = ButtonDefaults.elevation(
             defaultElevation = 10.dp,

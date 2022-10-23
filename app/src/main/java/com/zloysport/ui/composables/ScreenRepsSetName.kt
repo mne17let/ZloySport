@@ -1,4 +1,4 @@
-package com.zloysport.ui.setupreps.composables
+package com.zloysport.ui.composables
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
@@ -11,9 +11,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.zloysport.R
 import com.zloysport.ui.CommonViewModel
-import com.zloysport.ui.setupreps.composables.common.CommonConfirmButton
-import com.zloysport.ui.setupreps.composables.common.CommonTextField
-import com.zloysport.ui.setupreps.composables.common.CommonTitleBar
+import com.zloysport.ui.composables.common.CommonConfirmButton
+import com.zloysport.ui.composables.common.CommonTextField
+import com.zloysport.ui.composables.common.CommonTitleBar
 import com.zloysport.ui.theme.InfoSize
 
 @Composable
@@ -33,7 +33,9 @@ fun ScreenEnterTrainingName(
         ContentEnterRepsName()
         CommonConfirmButton(
             textResourceId = R.string.next_button_title
-        )
+        ) {
+            navController.navigate("timer")
+        }
     }
 }
 

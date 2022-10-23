@@ -1,4 +1,4 @@
-package com.zloysport.ui.setupreps.composables
+package com.zloysport.ui.composables
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -8,12 +8,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.zloysport.R
 import com.zloysport.ui.CommonViewModel
-import com.zloysport.ui.setupreps.composables.common.CommonActionButton
-import com.zloysport.ui.setupreps.composables.common.CommonTitleBar
+import com.zloysport.ui.composables.common.CommonActionButton
+import com.zloysport.ui.composables.common.CommonTitleBar
 import com.zloysport.ui.theme.InfoSize
 
 @Composable

@@ -1,7 +1,6 @@
-package com.zloysport.ui.setupreps.composables
+package com.zloysport.ui.composables
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -13,30 +12,43 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 
 @Composable
 fun ScreenTimer(
     relaxTime: Long,
-    activity: Activity
+    navController: NavController
 ) {
+    val viewModel = viewModel<TimerViewModel>()
+
+    val timerEnd = remember { viewModel.timerEnd }
+
+    LaunchedEffect(key1 = timerEnd.value, block = {
+        if (timerEnd.value) {
+            navController.navigate("drill") {
+                popUpTo("timer") {
+                    inclusive = true
+                }
+            }
+
+            timerEnd.value = false
+        }
+    })
+
     Column(
         modifier = Modifier
             .fillMaxSize()
     ) {
         Timer(
-            TimerViewModel(
-                5500
-            ),
-            activity
+            viewModel
         )
         Buttons()
     }
@@ -45,8 +57,7 @@ fun ScreenTimer(
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 private fun Timer(
-    viewModel: TimerViewModel,
-    activity: Activity
+    viewModel: TimerViewModel
 ) {
 
     Log.d(TAG, "Timer: рекомпозиция таймера")
@@ -62,7 +73,8 @@ private fun Timer(
 
     Box(
         modifier = Modifier
-            .size(300.dp)
+            .fillMaxSize()
+//            .size(300.dp)
             .clickable {
 
             },
@@ -87,7 +99,7 @@ private fun Timer(
                 startAngle = 0f,
                 sweepAngle = animatedTime.value,
                 useCenter = false,
-                topLeft = Offset(0f, size.height / 2 - size.minDimension / 2),
+                topLeft = Offset(size.width / 2 - size.minDimension / 2, size.height / 2 - size.minDimension / 2),
                 size = Size(size.minDimension, size.minDimension),
                 style = Stroke(
                     width = 24f
@@ -105,8 +117,8 @@ private fun Buttons() {
 }
 
 class TimerViewModel(
-    val time: Long
-) {
+    val time: Long = 2000
+): ViewModel() {
     var timeLeft = 360
     var count = mutableStateOf(360.0)
     var text = mutableStateOf("")
@@ -124,6 +136,8 @@ class TimerViewModel(
     val timeInSeconds = time / 100
 
     val oneAngle = 360.0 / timeInSeconds
+
+    var timerEnd = mutableStateOf(false)
 
     init {
 
@@ -156,6 +170,8 @@ class TimerViewModel(
 //                        }
                     }
                 }
+
+                timerEnd.value = true
             }
         }
 

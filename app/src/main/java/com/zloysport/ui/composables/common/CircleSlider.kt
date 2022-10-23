@@ -1,4 +1,4 @@
-package com.zloysport.helpful
+package com.zloysport.ui.composables.common
 
 import android.graphics.Paint
 import androidx.compose.animation.core.animateFloatAsState
@@ -17,34 +17,37 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import java.lang.Math.*
 import java.util.*
-import kotlin.math.*
+import kotlin.math.absoluteValue
 
-private data class SliderRange(val count: Int)
+data class CircleSliderRange(val count: Int)
 
 @Composable
-fun CircleSlider() {
-    RangeInfo(
-        SliderRange(
-            1
-        )
-    )
+fun CircleSlider(
+    range: CircleSliderRange = CircleSliderRange(1)
+) {
+    RangeInfo(range)
 }
 
 @Composable
 private fun RangeInfo(
-    range: SliderRange,
-    canvasSize: Dp = 400.dp,
-    handRadiusConst: Float = 60f,
-    rippleRadiusConst: Float = 60f,
-    shadowRadiusConst: Float = 75f,
-    shadowRadiusNull: Float = 1f,
-    rippleRadiusNull: Float = 0f,
-    outSidePaddingConst: Float = 100f,
-    outSideRadiusConst: Float = 60f
+    range: CircleSliderRange,
+    canvasSize: Dp = 250.dp
 ) {
+
+    val handRadiusConst = 60f
+    val rippleRadiusConst = 60f
+    val shadowRadiusConst = 75f
+    val handRadiusNull = 0f
+    val shadowRadiusNull = 1f
+    val rippleRadiusNull = 0f
+
+    val outSidePaddingConst = 100f
+
     var isInitial by remember { mutableStateOf(true) }
 
     var handOffset by remember { mutableStateOf(Offset(0f, 0f)) }
@@ -61,6 +64,10 @@ private fun RangeInfo(
     val animationShadowRadius = animateFloatAsState(
         targetValue = shadowRadius
     )
+
+    var outSideRadius by remember { mutableStateOf(0f) }
+    var dontAnimateOutSideRadius by remember { mutableStateOf(false) }
+    val animationOutSideRadius = animateFloatAsState(targetValue = outSideRadius)
 
     var outSideOffset by remember { mutableStateOf(Offset(0f, 0f)) }
 
@@ -86,17 +93,21 @@ private fun RangeInfo(
 
     Box(
         modifier = Modifier
-            .size(canvasSize)
+            .fillMaxSize()
             .padding(Dp(60f)),
         contentAlignment = Alignment.Center
     ) {
         Canvas(
             modifier = Modifier
-                .matchParentSize()
+                .size(canvasSize)
                 .pointerInput(Unit) {
                     detectDragGestures(
                         onDragStart = { touch ->
-                            isHit = isHitHand(handOffset, touch, misStep = handRadiusConst)
+                            isHit = isHitHand(handOffset, touch)
+                            if (isHit) {
+                                outSideRadius = 60f
+                                dontAnimateOutSideRadius = true
+                            }
                         },
                         onDrag = { change, offset ->
                             if (isHit) {
@@ -114,6 +125,7 @@ private fun RangeInfo(
                                         radius,
                                         center,
                                         startOffset,
+                                        oneAngle,
                                         outSidePaddingConst
                                     )
 
@@ -133,10 +145,10 @@ private fun RangeInfo(
                                         val diff = currentAngle - current
 
                                         if (diff < oneAngle) {
-                                            findAngle = if (diff <= oneAngle / 2.0) {
-                                                current
+                                            if (diff <= oneAngle / 2.0) {
+                                                findAngle = current
                                             } else {
-                                                iterator.next()
+                                                findAngle = iterator.next()
                                             }
                                             break
                                         }
@@ -146,8 +158,8 @@ private fun RangeInfo(
                                         currentAction = it
                                     }
 
-                                    val handY = center.y - sin(findAngle) * radius
-                                    val handX = center.x - cos(findAngle) * radius
+                                    val handY = center.y - Math.sin(findAngle) * radius
+                                    val handX = center.x - Math.cos(findAngle) * radius
 
                                     handOffset = Offset(handX.toFloat(), handY.toFloat())
 
@@ -158,6 +170,7 @@ private fun RangeInfo(
                                         radius,
                                         center,
                                         startOffset,
+                                        oneAngle,
                                         outSidePaddingConst
                                     )
 
@@ -167,9 +180,10 @@ private fun RangeInfo(
                         },
                         onDragEnd = {
                             rippleRadius = rippleRadiusNull
-
                             isHit = false
 
+                            outSideRadius = 0f
+                            dontAnimateOutSideRadius = false
                             shadowRadius = shadowRadiusConst
                         }
                     )
@@ -179,7 +193,10 @@ private fun RangeInfo(
                 .pointerInput(Unit) {
                     detectTapGestures(
                         onPress = {
-                            if (isHitHand(handOffset, it, misStep = handRadiusConst)
+                            if (isHitHand(
+                                    handOffset,
+                                    it
+                                )
                             ) {
                                 rippleRadius = rippleRadiusConst
                                 shadowRadius = shadowRadiusNull
@@ -188,21 +205,28 @@ private fun RangeInfo(
                             awaitRelease()
                             isHit = false
 
+                            outSideRadius = 0f
                             rippleRadius = rippleRadiusNull
                             shadowRadius = shadowRadiusConst
                         },
                         onLongPress = { touchOffset ->
-                            if (isHitHand(handOffset, touchOffset, misStep = handRadiusConst)
+                            if (isHitHand(
+                                    handOffset,
+                                    touchOffset
+                                )
                             ) {
                                 isHit = true
+                                outSideRadius = 60f
                                 outSideOffset = getDrawOffset(
                                     handOffset,
                                     radius,
                                     center,
                                     startOffset,
+                                    oneAngle,
                                     outSidePaddingConst
                                 ).handOutSideOffset
                             }
+
 
                             rippleRadius = rippleRadiusNull
                         }
@@ -211,7 +235,10 @@ private fun RangeInfo(
                 .pointerInput(Unit) {
                     detectDragGesturesAfterLongPress(
                         onDragStart = { touch ->
-                            isHit = isHitHand(handOffset, touch, misStep = handRadiusConst)
+                            isHit = isHitHand(handOffset, touch)
+                            if (isHit) {
+                                outSideRadius = 60f
+                            }
                         },
                         onDrag = { change, offset ->
                             if (isHit) {
@@ -229,6 +256,7 @@ private fun RangeInfo(
                                         radius,
                                         center,
                                         startOffset,
+                                        oneAngle,
                                         outSidePaddingConst
                                     )
 
@@ -259,8 +287,8 @@ private fun RangeInfo(
                                         currentAction = it
                                     }
 
-                                    val handY = center.y - sin(findAngle) * radius
-                                    val handX = center.x - cos(findAngle) * radius
+                                    val handY = center.y - Math.sin(findAngle) * radius
+                                    val handX = center.x - Math.cos(findAngle) * radius
 
                                     handOffset = Offset(handX.toFloat(), handY.toFloat())
 
@@ -271,6 +299,7 @@ private fun RangeInfo(
                                         radius,
                                         center,
                                         startOffset,
+                                        oneAngle,
                                         outSidePaddingConst
                                     )
 
@@ -282,11 +311,11 @@ private fun RangeInfo(
                             shadowRadius = shadowRadiusConst
                             rippleRadius = rippleRadiusNull
                             isHit = false
+                            outSideRadius = 0f
                         }
                     )
                 }
         ) {
-
             val strokeWidth = 20f
             val topLeftX = (size.width / 2f) - (size.minDimension / 2f) + handRadiusConst
             val topLeftY = (size.height / 2f) - (size.minDimension / 2f) + handRadiusConst
@@ -314,14 +343,14 @@ private fun RangeInfo(
             var angle = 0.0
 
             for (action in 0..range.count) {
-                val nextX = size.width / 2 - radius * cos(angle)
-                val nextY = size.height / 2 - radius * sin(angle)
+                val nextX = size.width / 2 - radius * Math.cos(angle)
+                val nextY = size.height / 2 - radius * Math.sin(angle)
 
-                val nextXStart = size.width / 2 - longRadius * cos(angle)
-                val nextYStart = size.height / 2 - longRadius * sin(angle)
+                val nextXStart = size.width / 2 - longRadius * Math.cos(angle)
+                val nextYStart = size.height / 2 - longRadius * Math.sin(angle)
 
-                val nextXEnd = size.width / 2 - shortRadius * cos(angle)
-                val nextYEnd = size.height / 2 - shortRadius * sin(angle)
+                val nextXEnd = size.width / 2 - shortRadius * Math.cos(angle)
+                val nextYEnd = size.height / 2 - shortRadius * Math.sin(angle)
 
                 if (range.count < SMALL_SIZE) {
                     drawLine(
@@ -440,19 +469,20 @@ private fun RangeInfo(
             } else {
                 drawCircle(
                     color = Color.Red,
-                    radius = outSideRadiusConst,
+                    radius = if (dontAnimateOutSideRadius) outSideRadius else animationOutSideRadius.value,
                     center = outSideOffset
                 )
             }
 
             val text = currentAction
 
-            val offsetDiff = if (text < 10) {
-                8f
+            val offsetDiff: Float
+            if (text < 10) {
+                offsetDiff = 8f
             } else if (text < 100) {
-                16f
+                offsetDiff = 16f
             } else {
-                24f
+                offsetDiff = 24f
             }
 
             if (isHit) {
@@ -475,7 +505,7 @@ private fun RangeInfo(
                         handOffset.y + 12f,
                         Paint().apply {
                             textSize = 24f
-                            color = DarkestBlue.toArgb()
+                            color = Color.White.toArgb()
                         }
                     )
                 }
@@ -490,11 +520,11 @@ private fun RangeInfo(
     }
 }
 
-private fun isHitHand(handCenterOffset: Offset, touchOffset: Offset, misStep: Float): Boolean {
+private fun isHitHand(handCenterOffset: Offset, touchOffset: Offset): Boolean {
     val difVert = handCenterOffset.y - touchOffset.y
     val difHor = handCenterOffset.x - touchOffset.x
-    val vert = -misStep < difVert && difVert < misStep
-    val hor = -misStep < difHor && difHor < misStep
+    val vert = -100 < difVert && difVert < 100
+    val hor = -100 < difHor && difHor < 100
 
     return vert && hor
 }
@@ -511,7 +541,7 @@ private fun isOnTheLine(
     val x = (touchOffset.x - center.x).absoluteValue
     val y = (touchOffset.y - center.y).absoluteValue
 
-    val currentRadius = sqrt((x * x + y * y).toDouble())
+    val currentRadius = Math.sqrt((x * x + y * y).toDouble())
 
     val isAboveHorizon = touchOffset.y - center.y <= 0
 
@@ -523,18 +553,22 @@ private fun getDrawOffset(
     radius: Float,
     center: Offset,
     startOffset: Offset,
+    oneAngle: Double,
     outSidePadding: Float
 ): CurrentOffsets {
+
+    val isRight = touchOffset.x - center.x >= 0
+
     val nulVectorX = startOffset.x - center.x
     val nulVectorY = startOffset.y - center.y
 
-    val nulLong = sqrt((nulVectorX * nulVectorX + nulVectorY * nulVectorY).toDouble())
+    val nulLong = Math.sqrt((nulVectorX * nulVectorX + nulVectorY * nulVectorY).toDouble())
 
     val touchVectorX = touchOffset.x - center.x
     val touchVectorY = touchOffset.y - center.y
 
     val touchLong =
-        sqrt((touchVectorX * touchVectorX + touchVectorY * touchVectorY).toDouble())
+        Math.sqrt((touchVectorX * touchVectorX + touchVectorY * touchVectorY).toDouble())
 
     val scalar = nulVectorX * touchVectorX + nulVectorY * touchVectorY
 
@@ -542,7 +576,7 @@ private fun getDrawOffset(
 
     val cos = scalar / prDlin
 
-    val phi = acos(cos)
+    val phi = Math.acos(cos)
 
     val radX = center.x - radius * cos
     val outSideRadius = radius + outSidePadding
@@ -550,14 +584,14 @@ private fun getDrawOffset(
     val radXLong = radX - center.x
     val radXLongOutSide = radXOutside - center.x
 
-    val radY = center.y - sqrt(radius * radius - radXLong * radXLong)
+    val radY = center.y - Math.sqrt(radius * radius - radXLong * radXLong)
     val radYOutSide =
-        center.y - sqrt(outSideRadius * outSideRadius - radXLongOutSide * radXLongOutSide)
+        center.y - Math.sqrt(outSideRadius * outSideRadius - radXLongOutSide * radXLongOutSide)
 
     return CurrentOffsets(
-        handCenterOffset = Offset(radX.toFloat(), radY.toFloat()),
-        handOutSideOffset = Offset(radXOutside.toFloat(), radYOutSide.toFloat()),
-        angle = phi
+        Offset(radX.toFloat(), radY.toFloat()),
+        Offset(radXOutside.toFloat(), radYOutSide.toFloat()),
+        phi
     )
 }
 
@@ -565,6 +599,11 @@ data class CurrentOffsets(
     val handCenterOffset: Offset,
     val handOutSideOffset: Offset,
     val angle: Double
+)
+
+data class AnimatedData(
+    val handOffset: Offset,
+    val action: Int
 )
 
 private const val SMALL_SIZE = 20
@@ -575,12 +614,24 @@ private const val SMALL_STEP = 2
 private const val MEDIUM_STEP = 5
 private const val LARGE_STEP = 10
 
-private val LightBlue = Color(0xFFE8F4FB)
+private val LightBlue = Color(0x80E8F4FB)
+private val Blue = Color(0xFF1092DC)
+private val DarkBlue = Color(0xFF0067A2)
 private val DarkestBlue = Color(0xFF004973)
+
+private val LightGreen = Color(0xFFB2EC9E)
+private val DarkGreen = Color(0xFF368B00)
 
 private val DarkGray = Color(0xFF8C8F8B)
 
+private val RippleGray = Color(0x80434642)
 private val RippleGrayAlpha20 = Color(0x33434642)
 
-val ShadowGrayAlpha50 = Color(0x80434642)
-val Transparent = Color(0x00000000)
+private val ShadowGrayAlpha50 = Color(0x80434642)
+private val Transparent = Color(0x00000000)
+
+@Preview
+@Composable
+fun CircleSilderPreview() {
+    CircleSlider()
+}

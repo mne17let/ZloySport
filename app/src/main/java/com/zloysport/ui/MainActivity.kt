@@ -8,10 +8,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.zloysport.ui.setupreps.composables.ScreenAllDrills
-import com.zloysport.ui.setupreps.composables.ScreenDrill
-import com.zloysport.ui.setupreps.composables.ScreenEnterTrainingName
-import com.zloysport.ui.setupreps.composables.ScreenTimer
+import com.zloysport.ui.composables.common.CircleSlider
+import com.zloysport.ui.composables.ScreenAllDrills
+import com.zloysport.ui.composables.ScreenDrill
+import com.zloysport.ui.composables.ScreenEnterTrainingName
+import com.zloysport.ui.composables.ScreenTimer
+import com.zloysport.ui.util.*
 
 class MainActivity : ComponentActivity() {
 
@@ -27,21 +29,21 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun SetUpNavHost(navController: NavHostController) {
-        NavHost(navController = navController, startDestination = "timer") {
-            composable("all_drills") {
+        NavHost(navController = navController, startDestination = ALL_DRILLS) {
+            composable(ALL_DRILLS) {
                 ScreenAllDrills(
                     viewModel = commonViewModel,
                     navController = navController
                 )
             }
-            composable("set_drill_name") {
+            composable(SET_DRILL_NAME) {
                 ScreenEnterTrainingName(
                     viewModel = commonViewModel,
                     navController = navController
                 )
             }
-            composable("drill") { ScreenDrill() }
-            composable("timer") { ScreenTimer(20L, this@MainActivity) }
+            composable(DRILL) { ScreenDrill() }
+            composable(TIMER) { ScreenTimer(20L, navController) }
         }
     }
 }
