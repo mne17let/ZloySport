@@ -28,14 +28,7 @@ data class CircleSliderRange(val count: Int)
 
 @Composable
 fun CircleSlider(
-    range: CircleSliderRange = CircleSliderRange(1)
-) {
-    RangeInfo(range)
-}
-
-@Composable
-private fun RangeInfo(
-    range: CircleSliderRange,
+    range: CircleSliderRange = CircleSliderRange(1),
     canvasSize: Dp = 250.dp
 ) {
 

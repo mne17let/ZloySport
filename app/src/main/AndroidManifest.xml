@@ -28,6 +28,8 @@
 
         </activity>
 
+        <service android:name=".ui.composables.TimerService" />
+
     </application>
 
 </manifest>
