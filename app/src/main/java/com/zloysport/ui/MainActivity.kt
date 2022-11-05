@@ -8,11 +8,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.zloysport.ui.composables.*
 import com.zloysport.ui.composables.common.CircleSlider
-import com.zloysport.ui.composables.ScreenAllDrills
-import com.zloysport.ui.composables.ScreenDrill
-import com.zloysport.ui.composables.ScreenEnterTrainingName
-import com.zloysport.ui.composables.ScreenTimer
 import com.zloysport.ui.util.*
 
 class MainActivity : ComponentActivity() {
@@ -29,7 +26,7 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun SetUpNavHost(navController: NavHostController) {
-        NavHost(navController = navController, startDestination = ALL_DRILLS) {
+        NavHost(navController = navController, startDestination = AMOUNT_OF_SETS) {
             composable(ALL_DRILLS) {
                 ScreenAllDrills(
                     viewModel = commonViewModel,
@@ -44,6 +41,7 @@ class MainActivity : ComponentActivity() {
             }
             composable(DRILL) { ScreenDrill() }
             composable(TIMER) { ScreenTimer(20L, navController) }
+            composable(AMOUNT_OF_SETS) { AmountOfSetsScreen(navController = navController) }
         }
     }
 }

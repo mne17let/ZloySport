@@ -6,4 +6,5 @@
     <string name="enter_drill_name_label">Например, отжимания</string>
     <string name="create_drill_title">Создание тренировки</string>
     <string name="create_drill_action">Создать тренировку</string>
+    <string name="choise_amount_of_sets">Укажите количество подходов за тренировку</string>
 </resources>
