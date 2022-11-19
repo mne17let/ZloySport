@@ -1,29 +1,23 @@
 package com.zloysport.ui.composables
 
-import androidx.compose.foundation.BorderStroke
+
+import com.zloysport.ui.composables.common.ListItemPicker
 import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.BlendMode.Companion.Color
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.zloysport.R
 import com.zloysport.ui.composables.common.CommonConfirmButton
 import com.zloysport.ui.composables.common.CommonTitleBar
-import com.zloysport.ui.theme.DarkestBlue
 import com.zloysport.ui.theme.InfoSize
 import com.zloysport.ui.util.TIMER
 
@@ -45,7 +39,8 @@ fun AmountOfSetsScreen(navController: NavController) {
             fontSize = InfoSize,
             textAlign = TextAlign.Center,
         )
-        val items = (1..10).toList()
+        var selectedValue by remember { mutableStateOf(3) }
+
         Box {
             Box(
                 modifier = Modifier
@@ -54,24 +49,18 @@ fun AmountOfSetsScreen(navController: NavController) {
                     .border(width = 6.dp, color = Color(0xFFACDCFF), shape = CircleShape)
                     .align(Alignment.Center)
             )
-            LazyRow(modifier = Modifier.align(Alignment.Center)) {
-                items(items) { item ->
-                    Text(
-                        modifier = Modifier.padding(horizontal = 72.dp),
-                        text = item.toString(),
-                        fontSize = 38.sp,
-                        textAlign = TextAlign.Center,
-//                    textColor = DarkestBlue,
-                    )
-                }
-            }
+            ListItemPicker(
+                modifier = Modifier
+                    .height(63.dp)
+                    .align(Alignment.Center),
+                value = selectedValue,
+                list = (1..10).toList(),
+                onValueChange = { selectedValue = it }
+            )
         }
 
-        CommonConfirmButton(
-            textResourceId = R.string.next_button_title,
-            onClick = {
-                navController.navigate(TIMER)
-            }
-        )
+        CommonConfirmButton(textResourceId = R.string.next_button_title, onClick = {
+            navController.navigate(TIMER)
+        })
     }
 }

@@ -14,7 +14,7 @@ import com.zloysport.ui.util.*
 
 class MainActivity : ComponentActivity() {
 
-    val commonViewModel = CommonViewModel()
+    private val commonViewModel = CommonViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun SetUpNavHost(navController: NavHostController) {
-        NavHost(navController = navController, startDestination = AMOUNT_OF_SETS) {
+        NavHost(navController = navController, startDestination = ALL_DRILLS) {
             composable(ALL_DRILLS) {
                 ScreenAllDrills(
                     viewModel = commonViewModel,
@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
             }
             composable(DRILL) { ScreenDrill() }
             composable(TIMER) { ScreenTimer(20L, navController) }
-            composable(AMOUNT_OF_SETS) { AmountOfSetsScreen(navController = navController) }
+            composable(AMOUNT_OF_SETS) { AmountOfSetsScreen(navController) }
         }
     }
 }
