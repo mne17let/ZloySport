@@ -2,7 +2,8 @@ package com.zloysport.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val LightBlue = Color(0x80E8F4FB)
+val LightBlue_alpha50 = Color(0x80E8F4FB)
+val LightBlue = Color(0xFFE8F4FB)
 val Blue = Color(0xFF1092DC)
 val DarkBlue = Color(0xFF0067A2)
 val DarkestBlue = Color(0xFF004973)

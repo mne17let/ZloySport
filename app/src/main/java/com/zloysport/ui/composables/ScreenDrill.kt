@@ -13,37 +13,36 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.zloysport.R
 import com.zloysport.data.Drill
 import com.zloysport.data.Range
-import com.zloysport.ui.composables.common.CircleSlider
+import com.zloysport.ui.CommonViewModel
+import com.zloysport.ui.composables.common.CommonTitleBar
+import com.zloysport.ui.composables.common.LineSlider
 import com.zloysport.ui.theme.*
 
 @Composable
-fun ScreenDrill() {
+fun ScreenDrill(
+    viewModel: CommonViewModel
+) {
     Column {
-//        DrillInfo(
-//            DrillInfo(
-//                ranges = listOf(
-//                    CircleSliderRange(1, true),
-//                    CircleSliderRange(10, false),
-//                    CircleSliderRange(200, false),
-//                    CircleSliderRange(999, false),
-//                    CircleSliderRange(5, false),
-//                    CircleSliderRange(67, false),
-//                    CircleSliderRange(67, false),
-//                    CircleSliderRange(165, false),
-//                    CircleSliderRange(28, true),
-//                    CircleSliderRange(29, false),
-//                    CircleSliderRange(162, true),
-//                    CircleSliderRange(271, false),
-//                    CircleSliderRange(63, true),
-//                    CircleSliderRange(29, false)
-//                )
-//            )
-//        )
+        CommonTitleBar(
+            R.drawable.ic_back,
+            stringResource(id = R.string.drill_title),
+            R.drawable.ic_close
+        )
+        DrillInfo(
+            Drill(
+                "Моя тренировка",
+                viewModel.rangeList,
+                relaxTime = 120,
+                2
+            )
+        )
         RangeInfo(
             Range(
                 100,
@@ -57,25 +56,25 @@ fun ScreenDrill() {
 private fun DrillInfo(drillInfo: Drill) {
     LazyRow(
         modifier = Modifier
-            .padding(vertical = 20.dp)
     ) {
         items(drillInfo.rangeList.size) {
             val range = drillInfo.rangeList[it]
-            val modifier = Modifier
             val backColor = if (range.alreadyDone) LightGreen else LightBlue
             val textColor = if (range.alreadyDone) DarkGreen else DarkestBlue
             Box(
-                modifier = modifier
-                    .padding(8.dp)
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
                     .size(80.dp)
                     .shadow(elevation = 8.dp, shape = CircleShape)
                     .clip(shape = CircleShape)
+
+
                     .background(backColor)
+
                     .clickable(enabled = true,
                         interactionSource = MutableInteractionSource(),
                         indication = rememberRipple(),
-                        onClick = {}),
-                contentAlignment = Alignment.Center
+                        onClick = {}), contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = range.count.toString(),
@@ -89,13 +88,15 @@ private fun DrillInfo(drillInfo: Drill) {
 
 @Composable
 fun RangeInfo(range: Range) {
-    CircleSlider(
-        range.toCircleSliderRange()
+    LineSlider(
+        range.toLineSliderRange()
     )
 }
 
 @Preview
 @Composable
 fun ScreenDrillPreview() {
-    ScreenDrill()
+    ScreenDrill(
+        viewModel = CommonViewModel()
+    )
 }

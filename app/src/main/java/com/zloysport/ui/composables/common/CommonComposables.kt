@@ -111,7 +111,7 @@ fun CommonActionButton(
 @Composable
 fun CommonTitleBar(
     @DrawableRes leftIconResId: Int? = null,
-    @StringRes titleResId: Int,
+    title: String,
     @DrawableRes rightIconResId: Int? = null,
 ) {
     Row(
@@ -142,7 +142,7 @@ fun CommonTitleBar(
                 .weight(1f)
                 .padding(start = textStartPadding, end = textEndPadding)
                 .padding(vertical = textVerticalPadding),
-            text = stringResource(id = titleResId),
+            text = title,
             fontSize = TitleSize,
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold

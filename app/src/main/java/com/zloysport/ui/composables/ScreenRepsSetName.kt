@@ -27,7 +27,7 @@ fun ScreenEnterTrainingName(
     ) {
         CommonTitleBar(
             leftIconResId = R.drawable.ic_back,
-            titleResId = R.string.create_drill_title,
+            title = stringResource(id = R.string.create_drill_title),
             rightIconResId = R.drawable.ic_close,
         )
         ContentEnterRepsName()

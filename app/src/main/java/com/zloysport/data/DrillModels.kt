@@ -1,6 +1,7 @@
 package com.zloysport.data
 
 import com.zloysport.ui.composables.common.CircleSliderRange
+import com.zloysport.ui.composables.common.LineSliderRange
 
 data class Drill(
     val name: String = "",
@@ -14,4 +15,5 @@ data class Range(
     val alreadyDone: Boolean
 ) {
     fun toCircleSliderRange(): CircleSliderRange = CircleSliderRange(count)
+    fun toLineSliderRange(): LineSliderRange = LineSliderRange(count)
 }
