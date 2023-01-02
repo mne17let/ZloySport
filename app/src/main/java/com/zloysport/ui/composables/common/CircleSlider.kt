@@ -20,15 +20,14 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import java.lang.Math.*
-import java.util.*
-import kotlin.math.absoluteValue
+import java.util.LinkedList
+import kotlin.math.*
 
 data class CircleSliderRange(val count: Int)
 
 @Composable
 fun CircleSlider(
-    range: CircleSliderRange = CircleSliderRange(1),
+    range: CircleSliderRange = CircleSliderRange(100),
     canvasSize: Dp = 250.dp
 ) {
 
@@ -38,6 +37,8 @@ fun CircleSlider(
     val handRadiusNull = 0f
     val shadowRadiusNull = 1f
     val rippleRadiusNull = 0f
+    val strokeWidth = 20f
+    val missStep = 100f
 
     val outSidePaddingConst = 100f
 
@@ -108,7 +109,7 @@ fun CircleSlider(
                                         change.position,
                                         radius,
                                         center,
-                                        misStep = radius
+                                        misStep = missStep
                                     )
                                 ) {
                                     isInitial = false
@@ -151,8 +152,8 @@ fun CircleSlider(
                                         currentAction = it
                                     }
 
-                                    val handY = center.y - Math.sin(findAngle) * radius
-                                    val handX = center.x - Math.cos(findAngle) * radius
+                                    val handY = center.y - sin(findAngle) * radius
+                                    val handX = center.x - cos(findAngle) * radius
 
                                     handOffset = Offset(handX.toFloat(), handY.toFloat())
 
@@ -239,7 +240,7 @@ fun CircleSlider(
                                         change.position,
                                         radius,
                                         center,
-                                        misStep = radius
+                                        misStep = missStep
                                     )
                                 ) {
                                     isInitial = false
@@ -280,8 +281,8 @@ fun CircleSlider(
                                         currentAction = it
                                     }
 
-                                    val handY = center.y - Math.sin(findAngle) * radius
-                                    val handX = center.x - Math.cos(findAngle) * radius
+                                    val handY = center.y - sin(findAngle) * radius
+                                    val handX = center.x - cos(findAngle) * radius
 
                                     handOffset = Offset(handX.toFloat(), handY.toFloat())
 
@@ -309,7 +310,6 @@ fun CircleSlider(
                     )
                 }
         ) {
-            val strokeWidth = 20f
             val topLeftX = (size.width / 2f) - (size.minDimension / 2f) + handRadiusConst
             val topLeftY = (size.height / 2f) - (size.minDimension / 2f) + handRadiusConst
             val topLeft = Offset(topLeftX, topLeftY)
@@ -336,14 +336,14 @@ fun CircleSlider(
             var angle = 0.0
 
             for (action in 0..range.count) {
-                val nextX = size.width / 2 - radius * Math.cos(angle)
-                val nextY = size.height / 2 - radius * Math.sin(angle)
+                val nextX = size.width / 2 - radius * cos(angle)
+                val nextY = size.height / 2 - radius * sin(angle)
 
-                val nextXStart = size.width / 2 - longRadius * Math.cos(angle)
-                val nextYStart = size.height / 2 - longRadius * Math.sin(angle)
+                val nextXStart = size.width / 2 - longRadius * cos(angle)
+                val nextYStart = size.height / 2 - longRadius * sin(angle)
 
-                val nextXEnd = size.width / 2 - shortRadius * Math.cos(angle)
-                val nextYEnd = size.height / 2 - shortRadius * Math.sin(angle)
+                val nextXEnd = size.width / 2 - shortRadius * cos(angle)
+                val nextYEnd = size.height / 2 - shortRadius * sin(angle)
 
                 if (range.count < SMALL_SIZE) {
                     drawLine(
@@ -426,7 +426,6 @@ fun CircleSlider(
 
                 angle += oneAngle
             }
-
             if (isInitial) {
                 handOffset = Offset(center.x - radius, center.y)
                 startOffset = Offset(center.x - radius, center.y)
@@ -534,7 +533,7 @@ private fun isOnTheLine(
     val x = (touchOffset.x - center.x).absoluteValue
     val y = (touchOffset.y - center.y).absoluteValue
 
-    val currentRadius = Math.sqrt((x * x + y * y).toDouble())
+    val currentRadius = sqrt((x * x + y * y).toDouble())
 
     val isAboveHorizon = touchOffset.y - center.y <= 0
 
@@ -555,13 +554,13 @@ private fun getDrawOffset(
     val nulVectorX = startOffset.x - center.x
     val nulVectorY = startOffset.y - center.y
 
-    val nulLong = Math.sqrt((nulVectorX * nulVectorX + nulVectorY * nulVectorY).toDouble())
+    val nulLong = sqrt((nulVectorX * nulVectorX + nulVectorY * nulVectorY).toDouble())
 
     val touchVectorX = touchOffset.x - center.x
     val touchVectorY = touchOffset.y - center.y
 
     val touchLong =
-        Math.sqrt((touchVectorX * touchVectorX + touchVectorY * touchVectorY).toDouble())
+        sqrt((touchVectorX * touchVectorX + touchVectorY * touchVectorY).toDouble())
 
     val scalar = nulVectorX * touchVectorX + nulVectorY * touchVectorY
 
@@ -569,7 +568,7 @@ private fun getDrawOffset(
 
     val cos = scalar / prDlin
 
-    val phi = Math.acos(cos)
+    val phi = acos(cos)
 
     val radX = center.x - radius * cos
     val outSideRadius = radius + outSidePadding
@@ -577,9 +576,9 @@ private fun getDrawOffset(
     val radXLong = radX - center.x
     val radXLongOutSide = radXOutside - center.x
 
-    val radY = center.y - Math.sqrt(radius * radius - radXLong * radXLong)
+    val radY = center.y - sqrt(radius * radius - radXLong * radXLong)
     val radYOutSide =
-        center.y - Math.sqrt(outSideRadius * outSideRadius - radXLongOutSide * radXLongOutSide)
+        center.y - sqrt(outSideRadius * outSideRadius - radXLongOutSide * radXLongOutSide)
 
     return CurrentOffsets(
         Offset(radX.toFloat(), radY.toFloat()),
@@ -592,11 +591,6 @@ data class CurrentOffsets(
     val handCenterOffset: Offset,
     val handOutSideOffset: Offset,
     val angle: Double
-)
-
-data class AnimatedData(
-    val handOffset: Offset,
-    val action: Int
 )
 
 private const val SMALL_SIZE = 20
