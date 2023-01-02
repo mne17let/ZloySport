@@ -15,6 +15,8 @@ import com.zloysport.ui.composables.common.CommonConfirmButton
 import com.zloysport.ui.composables.common.CommonTextField
 import com.zloysport.ui.composables.common.CommonTitleBar
 import com.zloysport.ui.theme.InfoSize
+import com.zloysport.ui.util.AMOUNT_OF_SETS
+import com.zloysport.ui.util.TIMER
 
 @Composable
 fun ScreenEnterTrainingName(
@@ -32,10 +34,11 @@ fun ScreenEnterTrainingName(
         )
         ContentEnterRepsName()
         CommonConfirmButton(
-            textResourceId = R.string.next_button_title
-        ) {
-            navController.navigate("timer")
-        }
+            textResourceId = R.string.next_button_title,
+            onClick = {
+                navController.navigate(AMOUNT_OF_SETS)
+            }
+        )
     }
 }
 
