@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun SetUpNavHost(navController: NavHostController) {
-        NavHost(navController = navController, startDestination = ALL_DRILLS) {
+        NavHost(navController = navController, startDestination = AMOUNT_OF_SETS) {
             composable(ALL_DRILLS) {
                 ScreenAllDrills(
                     viewModel = commonViewModel,
