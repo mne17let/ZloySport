@@ -1,4 +1,4 @@
-package com.zloysport.ui
+package com.zloysport
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -8,12 +8,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.zloysport.ui.composables.*
-import com.zloysport.ui.composables.ScreenAllDrills
-import com.zloysport.ui.composables.ScreenDrill
-import com.zloysport.ui.composables.ScreenEnterTrainingName
-import com.zloysport.ui.composables.ScreenTimer
-import com.zloysport.ui.util.*
+import com.zloysport.old.composables.AmountOfSetsScreen
+import com.zloysport.old.composables.ScreenAllDrills
+import com.zloysport.old.composables.ScreenDrill
+import com.zloysport.old.composables.ScreenEnterTrainingName
+import com.zloysport.old.composables.ScreenTimer
+import com.zloysport.old.ui.CommonViewModel
+import com.zloysport.old.ui.util.*
 
 class MainActivity : ComponentActivity() {
 

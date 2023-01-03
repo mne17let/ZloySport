@@ -14,7 +14,7 @@
         android:theme="@style/Theme.ZloySport"
         tools:targetApi="31">
 
-        <activity android:name=".ui.MainActivity"
+        <activity android:name=".MainActivity"
 
             android:exported="true">
 
@@ -28,7 +28,7 @@
 
         </activity>
 
-        <service android:name=".ui.composables.TimerService" />
+        <service android:name=".old.composables.TimerService" />
 
     </application>
 

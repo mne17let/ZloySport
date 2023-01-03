@@ -1,4 +1,4 @@
-package com.zloysport.ui.composables
+package com.zloysport.old.composables
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,10 +11,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.zloysport.R
-import com.zloysport.ui.CommonViewModel
-import com.zloysport.ui.composables.common.CommonActionButton
-import com.zloysport.ui.composables.common.CommonTitleBar
-import com.zloysport.ui.theme.InfoSize
+import com.zloysport.old.ui.CommonViewModel
+import com.zloysport.old.composables.common.CommonActionButton
+import com.zloysport.old.composables.common.CommonTitleBar
+import com.zloysport.old.ui.theme.InfoSize
 
 @Composable
 fun ScreenAllDrills(

@@ -1,4 +1,4 @@
-package com.zloysport.ui.composables.common
+package com.zloysport.old.composables.common
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.gestures.Orientation

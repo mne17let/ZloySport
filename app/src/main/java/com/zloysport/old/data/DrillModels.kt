@@ -1,7 +1,7 @@
-package com.zloysport.data
+package com.zloysport.old.data
 
-import com.zloysport.ui.composables.common.CircleSliderRange
-import com.zloysport.ui.composables.common.LineSliderRange
+import com.zloysport.old.composables.common.CircleSliderRange
+import com.zloysport.old.composables.common.LineSliderRange
 
 data class Drill(
     val name: String = "",

@@ -1,4 +1,4 @@
-package com.zloysport.ui.composables.common
+package com.zloysport.old.composables.common
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -13,8 +13,8 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.zloysport.ui.theme.Blue
-import com.zloysport.ui.theme.LightBlue
+import androidx.compose.ui.unit.sp
+import com.zloysport.old.ui.theme.Blue
 import kotlin.math.*
 
 data class LineSliderRange(val count: Int)
@@ -364,7 +364,7 @@ fun LineSlider(
             } else {
                 drawCircle(
                     center = currentChosenPoint,
-                    color = LightBlue,
+                    color = Color.Red,
                     radius = 60f
                 )
 
@@ -384,7 +384,7 @@ fun LineSlider(
         Column(
             modifier = Modifier.size(100.dp)
         ) {
-            Text(text = currentChosenStep.toString())
+            Text(text = currentChosenStep.toString(), fontSize = 60.sp)
             Text(text = "Повторений")
         }
     }

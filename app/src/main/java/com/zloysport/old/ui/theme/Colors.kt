@@ -1,4 +1,4 @@
-package com.zloysport.ui.theme
+package com.zloysport.old.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
