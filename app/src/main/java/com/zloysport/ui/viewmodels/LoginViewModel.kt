@@ -1,57 +1,79 @@
 package com.zloysport.ui.viewmodels
 
-import android.os.Parcelable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import kotlinx.parcelize.Parcelize
 import kotlin.random.Random
 
 class LoginViewModel : ViewModel() {
     var count = 0
 
-    var state: MutableState<LoginState?> = mutableStateOf(null)
+    var state: MutableState<LoginState> = mutableStateOf(LoginState())
 
-    fun checkAndlogin(login: String, password: String) {
-        validateAndSetState(login, password)
-        count++
+    fun onLoginInput(login: String) {
+        state.value = LoginState(
+            login = login
+        )
     }
 
-    fun onStateConsumed(consumedState: LoginState) {
-        when(consumedState) {
-            is LoginState.Fail -> setAwaitInputState()
-            is LoginState.Success -> setAwaitInputState()
-            is LoginState.AwaitInput -> {}
-        }
+    fun onLoginButtonClicked(login: String, password: String) {
+        validateAndSetState(login, password)
+    }
+
+    fun onMessageHandled(handledMessage: HandledMessage) {
+        val oldValue = state.value
+        state.value = LoginState(
+            login = oldValue.login,
+            password = oldValue.password
+        )
     }
 
     private fun validateAndSetState(login: String, password: String) {
         val check = Random.nextInt(0, 2)
 
         if (check == 0) {
-            setFailState(login, password)
+            setSuccessLoginState(login, password)
         } else {
-            setSuccessState(login, password, check)
+            setErrorState(login, password, check)
         }
+        count++
     }
 
-    private fun setSuccessState(login: String, password: String, check: Int) {
+    private fun setSuccessLoginState(
+        login: String,
+        password: String
+    ) {
         state.value =
-            LoginState.Success("$count ЧИСЛО == $check Успешный вход = $login || $password")
+            LoginState(
+                login = login,
+                password = password,
+                hasMessage = true,
+                message = "$count Ошибка входа $login || $password",
+                hasError = true
+            )
     }
 
-    private fun setFailState(login: String, password: String) {
-        state.value = LoginState.Fail("$count Ошибка входа $login || $password")
+    private fun setErrorState(login: String, password: String, check: Int) {
+        state.value =
+            LoginState(
+                login = login,
+                password = password,
+                hasMessage = true,
+                message = "$count ЧИСЛО == $check Успешный вход = $login || $password",
+                hasError = false
+            )
     }
 
-    private fun setAwaitInputState() {
-        state.value = LoginState.AwaitInput()
-    }
+    class LoginState(
+        val message: String = "Дефолтное",
+        val hasMessage: Boolean = false,
+        val login: String = "ДД",
+        val password: String = "",
+        val hasError: Boolean = false
+    )
 
-    @Parcelize
-    sealed class LoginState : Parcelable {
-        class Success(val message: String) : LoginState()
-        class Fail(val message: String) : LoginState()
-        class AwaitInput : LoginState()
+    enum class HandledMessage {
+        SnackBar,
+        Toast
     }
 }

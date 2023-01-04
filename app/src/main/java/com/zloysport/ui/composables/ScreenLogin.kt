@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.zloysport.ui.theme.SpaceBetweenColumnItems
 import com.zloysport.ui.viewmodels.LoginViewModel
-import kotlin.math.log
 
 var count = 0
 
@@ -35,33 +34,23 @@ fun ScreenLogin(
             modifier = Modifier,
             verticalArrangement = Arrangement.spacedBy(SpaceBetweenColumnItems),
         ) {
-            val loginState by rememberSaveable { viewModel.state }
+            val loginState by remember { viewModel.state }
+            val loginValue = loginState.login
+            val hasMessage = loginState.hasMessage
             val context = LocalContext.current
 
-            LaunchedEffect(key1 = loginState) {
-                when (loginState) {
-                    is LoginViewModel.LoginState.Success -> {
-                        val state = loginState as LoginViewModel.LoginState.Success
-                        Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
-                        viewModel.onStateConsumed(state)
-                    }
-                    is LoginViewModel.LoginState.Fail -> {
-                        val state = loginState as LoginViewModel.LoginState.Fail
-                        viewModel.onStateConsumed(state)
+            if (hasMessage) {
+                val message = loginState.message
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                viewModel.onMessageHandled(LoginViewModel.HandledMessage.Toast)
 
-                        Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
-                    }
-                    else -> {}
-                }
             }
 
-
-            var loginValue by remember { mutableStateOf("TextFieldValue - Логин") }
             var passwordValue by remember { mutableStateOf("TextFieldValue - Пароль") }
             TextField(
                 value = loginValue,
                 onValueChange = {
-                    loginValue = it
+                    viewModel.onLoginInput(it)
                 }
             )
 
@@ -73,7 +62,7 @@ fun ScreenLogin(
             )
 
             Button(onClick = {
-                viewModel.checkAndlogin(loginValue, passwordValue)
+                viewModel.onLoginButtonClicked(loginValue, passwordValue)
             }) {
                 Text(text = "Войти или зарегистрироваться")
             }
