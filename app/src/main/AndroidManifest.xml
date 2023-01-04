@@ -28,7 +28,7 @@
 
         </activity>
 
-        <service android:name=".old.composables.TimerService" />
+        <service android:name="old.composables.TimerService" />
 
     </application>
 

@@ -1,4 +1,4 @@
-package com.zloysport.old.composables
+package old.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,15 +18,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zloysport.R
-import com.zloysport.old.data.Drill
-import com.zloysport.old.data.Range
-import com.zloysport.old.ui.CommonViewModel
-import com.zloysport.old.composables.common.CommonTitleBar
-import com.zloysport.old.composables.common.LineSlider
-import com.zloysport.old.ui.theme.DarkGreen
-import com.zloysport.old.ui.theme.DarkestBlue
-import com.zloysport.old.ui.theme.LightBlue
-import com.zloysport.old.ui.theme.LightGreen
+import old.data.Drill
+import old.data.Range
+import old.ui.CommonViewModel
+import old.composables.common.CommonTitleBar
+import old.composables.common.LineSlider
+import old.ui.theme.DarkGreen
+import old.ui.theme.DarkestBlue
+import old.ui.theme.LightBlue
+import old.ui.theme.LightGreen
 
 @Composable
 fun ScreenDrill(

@@ -1,4 +1,4 @@
-package com.zloysport.old.composables.common
+package old.composables.common
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -21,9 +21,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.zloysport.old.ui.theme.ButtonSize
-import com.zloysport.old.ui.theme.HintSize
-import com.zloysport.old.ui.theme.TitleSize
+import old.ui.theme.ButtonSize
+import old.ui.theme.HintSize
+import old.ui.theme.TitleSize
 
 @Composable
 fun CommonTextField(
@@ -61,7 +61,7 @@ fun CommonConfirmButton(
             .padding(horizontal = 32.dp)
             .padding(bottom = 32.dp),
         onClick = onClick,
-        colors = ButtonDefaults.buttonColors(backgroundColor = com.zloysport.old.ui.theme.Blue),
+        colors = ButtonDefaults.buttonColors(backgroundColor = old.ui.theme.Blue),
         elevation = ButtonDefaults.elevation(
             defaultElevation = 10.dp,
             pressedElevation = 0.dp,
@@ -91,7 +91,7 @@ fun CommonActionButton(
         onClick = {
             onClick()
         },
-        colors = ButtonDefaults.buttonColors(backgroundColor = com.zloysport.old.ui.theme.Blue),
+        colors = ButtonDefaults.buttonColors(backgroundColor = old.ui.theme.Blue),
         elevation = ButtonDefaults.elevation(
             defaultElevation = 6.dp,
             pressedElevation = 0.dp,

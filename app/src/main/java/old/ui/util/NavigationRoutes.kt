@@ -1,4 +1,4 @@
-package com.zloysport.old.ui.util
+package old.ui.util
 
 const val DRILL = "drill"
 const val ALL_DRILLS = "all_drills"

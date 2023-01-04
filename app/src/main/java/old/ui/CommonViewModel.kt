@@ -1,6 +1,6 @@
-package com.zloysport.old.ui
+package old.ui
 
-import com.zloysport.old.data.Range
+import old.data.Range
 
 class CommonViewModel {
     val haveDrills: Boolean = false

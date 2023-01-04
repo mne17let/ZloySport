@@ -3,22 +3,17 @@ package com.zloysport
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.zloysport.old.composables.AmountOfSetsScreen
-import com.zloysport.old.composables.ScreenAllDrills
-import com.zloysport.old.composables.ScreenDrill
-import com.zloysport.old.composables.ScreenEnterTrainingName
-import com.zloysport.old.composables.ScreenTimer
-import com.zloysport.old.ui.CommonViewModel
-import com.zloysport.old.ui.util.*
+import com.zloysport.ui.viewmodels.LoginViewModel
 
 class MainActivity : ComponentActivity() {
 
-    private val commonViewModel = CommonViewModel()
+    private val loginViewModel by viewModels<LoginViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,24 +25,12 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun SetUpNavHost(navController: NavHostController) {
-        NavHost(navController = navController, startDestination = AMOUNT_OF_SETS) {
-            composable(ALL_DRILLS) {
-                ScreenAllDrills(
-                    viewModel = commonViewModel,
-                    navController = navController
-                )
+        NavHost(navController = navController, startDestination = LOGIN) {
+            composable(LOGIN) {
+                ScreenLogin(loginViewModel)
             }
-            composable(SET_DRILL_NAME) {
-                ScreenEnterTrainingName(
-                    viewModel = commonViewModel,
-                    navController = navController
-                )
-            }
-            composable(DRILL) { ScreenDrill(viewModel = commonViewModel) }
-            composable(TIMER) { ScreenTimer(20L, navController) }
-            composable(AMOUNT_OF_SETS) { AmountOfSetsScreen(navController) }
         }
     }
 }
 
-const val LogTag = "GlobalTag"
+const val GlobalTag = "GlobalTag"
