@@ -1,7 +1,7 @@
-package com.zloysport.data.storages
+package com.zloysport.data.storages.remote
 
 import com.zloysport.data.models.Account
 
-interface LocalStorage {
+interface RemoteStorage {
     fun getAccountData(): Account
 }
