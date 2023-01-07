@@ -1,4 +1,4 @@
-package old.composables.common
+package com.zloysport.ui.composables
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -14,7 +14,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import old.ui.theme.Blue
+import com.zloysport.ui.old.ui.theme.Blue
 import kotlin.math.*
 
 data class LineSliderRange(val count: Int)

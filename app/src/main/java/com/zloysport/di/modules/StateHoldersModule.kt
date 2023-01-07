@@ -5,6 +5,7 @@ import com.zloysport.di.StateHoldersProvider
 import com.zloysport.ui.states.LoginStateHolder
 import dagger.Module
 import dagger.Provides
+import com.zloysport.ui.states.AllDrillsStateHolder
 
 @Module
 class StateHoldersModule {
@@ -18,5 +19,10 @@ class StateHoldersModule {
         ) {
             LoginStateHolder(loginInteractor)
         }
+    }
+
+    @Provides
+    fun provideAllDrillsState(): AllDrillsStateHolder {
+        return AllDrillsStateHolder()
     }
 }

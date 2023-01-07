@@ -11,14 +11,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.zloysport.R
-import old.ui.CommonViewModel
+import com.zloysport.ui.states.AllDrillsStateHolder
 import old.composables.common.CommonActionButton
 import old.composables.common.CommonTitleBar
-import old.ui.theme.InfoSize
+import com.zloysport.ui.old.ui.theme.InfoSize
 
 @Composable
 fun ScreenAllDrills(
-    viewModel: CommonViewModel,
+    allDrillsStateHolder: AllDrillsStateHolder,
     navController: NavController
 ) {
     Column(
@@ -30,7 +30,7 @@ fun ScreenAllDrills(
             title = stringResource(id = R.string.all_drills_title)
         )
         AllDrillsContent(
-            viewModel = viewModel,
+            allDrillsStateHolder = allDrillsStateHolder,
             navController = navController
         )
     }
@@ -38,10 +38,10 @@ fun ScreenAllDrills(
 
 @Composable
 private fun AllDrillsContent(
-    viewModel: CommonViewModel,
+    allDrillsStateHolder: AllDrillsStateHolder,
     navController: NavController
 ) {
-    if (viewModel.haveDrills) {
+    if (allDrillsStateHolder.haveDrills) {
         HaveDrillsState()
     } else {
         EmptyStateDrills(navController = navController)

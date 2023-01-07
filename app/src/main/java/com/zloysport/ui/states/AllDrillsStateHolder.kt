@@ -1,9 +1,9 @@
-package old.ui
+package com.zloysport.ui.states
 
-import old.data.Range
+import com.zloysport.data.Range
 
-class CommonViewModel {
-    val haveDrills: Boolean = false
+class AllDrillsStateHolder {
+    val haveDrills: Boolean = true
 
     val rangeList = listOf(
         Range(1, true),

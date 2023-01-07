@@ -11,12 +11,18 @@ import androidx.navigation.compose.rememberNavController
 import com.zloysport.di.ZloySportApplication
 import com.zloysport.ui.GlobalState
 import com.zloysport.ui.states.LoginStateHolder
+import old.composables.ScreenAllDrills
+import old.composables.ScreenSetDrillName
+import com.zloysport.ui.states.AllDrillsStateHolder
 import javax.inject.Inject
 
 class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var loginStateHolder: LoginStateHolder
+
+    @Inject
+    lateinit var allDrillsStateHolder: AllDrillsStateHolder
 
     @Inject
     lateinit var globalState: GlobalState
@@ -36,12 +42,15 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun SetUpNavHost(navController: NavHostController, hasAcc: Boolean) {
-        NavHost(navController = navController, startDestination = if (hasAcc) DRILLS else LOGIN) {
+        NavHost(navController = navController, startDestination = if (hasAcc) ALL_DRILLS else LOGIN) {
             composable(LOGIN) {
                 ScreenLogin(loginStateHolder)
             }
-            composable(DRILLS) {
-                ScreenDrills()
+            composable(ALL_DRILLS) {
+                ScreenAllDrills(allDrillsStateHolder = allDrillsStateHolder, navController = navController)
+            }
+            composable(SET_DRILL_NAME) {
+                ScreenSetDrillName(navController = navController)
             }
         }
     }

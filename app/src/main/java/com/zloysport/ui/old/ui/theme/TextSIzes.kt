@@ -1,4 +1,4 @@
-package old.ui.theme
+package com.zloysport.ui.old.ui.theme
 
 import androidx.compose.ui.unit.sp
 

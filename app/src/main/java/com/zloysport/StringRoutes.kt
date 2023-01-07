@@ -1,4 +1,5 @@
 package com.zloysport
 
 const val LOGIN = "login"
-const val DRILLS = "drills"
+const val ALL_DRILLS = "all_drills"
+const val SET_DRILL_NAME = "set_drill_name"

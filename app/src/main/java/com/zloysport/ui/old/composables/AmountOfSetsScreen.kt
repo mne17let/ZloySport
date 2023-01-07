@@ -1,7 +1,7 @@
-package old.composables
+package com.zloysport.ui.old.composables
 
 
-import old.composables.common.ListItemPicker
+import com.zloysport.ui.old.composables.common.ListItemPicker
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -18,8 +18,8 @@ import androidx.navigation.NavController
 import com.zloysport.R
 import old.composables.common.CommonConfirmButton
 import old.composables.common.CommonTitleBar
-import old.ui.theme.InfoSize
-import old.ui.util.TIMER
+import com.zloysport.ui.old.ui.theme.InfoSize
+import com.zloysport.ui.old.ui.util.TIMER
 
 @Composable
 fun AmountOfSetsScreen(navController: NavController) {

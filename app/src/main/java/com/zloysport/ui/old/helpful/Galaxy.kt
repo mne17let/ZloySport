@@ -1,4 +1,4 @@
-package old.helpful
+package com.zloysport.ui.old.helpful
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas

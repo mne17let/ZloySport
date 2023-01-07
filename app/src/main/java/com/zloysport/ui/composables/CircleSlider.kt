@@ -1,4 +1,4 @@
-package old.composables.common
+package com.zloysport.ui.composables
 
 import android.graphics.Paint
 import androidx.compose.animation.core.animateFloatAsState

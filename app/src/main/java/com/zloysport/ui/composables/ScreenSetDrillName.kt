@@ -10,16 +10,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.zloysport.R
-import old.ui.CommonViewModel
 import old.composables.common.CommonConfirmButton
 import old.composables.common.CommonTextField
 import old.composables.common.CommonTitleBar
-import old.ui.theme.InfoSize
-import old.ui.util.AMOUNT_OF_SETS
+import com.zloysport.ui.old.ui.theme.InfoSize
+import com.zloysport.ui.old.ui.util.AMOUNT_OF_SETS
 
 @Composable
-fun ScreenEnterTrainingName(
-    viewModel: CommonViewModel,
+fun ScreenSetDrillName(
     navController: NavController
 ) {
     Column(
