@@ -1,4 +1,4 @@
-package old.composables
+package com.zloysport.ui.composables
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
@@ -10,9 +10,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.zloysport.R
-import old.composables.common.CommonConfirmButton
-import old.composables.common.CommonTextField
-import old.composables.common.CommonTitleBar
 import com.zloysport.ui.old.ui.theme.InfoSize
 import com.zloysport.ui.old.ui.util.AMOUNT_OF_SETS
 

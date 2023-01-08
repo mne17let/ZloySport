@@ -8,114 +8,66 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.random.Random
 
 class LoginStateHolder(
-    private var interactor: LoginInteractor
+    private var interactor: LoginInteractor,
+    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 ) : StateHolder {
-    var count = 0
-
     var state: MutableState<LoginState> = mutableStateOf(LoginState())
 
     override fun clear() {
     }
 
     fun onLoginInput(login: String) {
-        state.value = LoginState(
-            login = login
-        )
+        state.value = state.value.copy(login = login)
+    }
+
+    fun onPasswordInput(password: String) {
+        state.value = state.value.copy(password = password)
     }
 
     fun onLoginButtonClicked(login: String, password: String) {
-        val oldState = state.value
-        state.value = LoginState(
-            message = oldState.message,
-            login = oldState.login,
-            password = oldState.password,
-            hasMessage = oldState.hasMessage,
-            hasError = oldState.hasError,
-            showLoading = true
-        )
+        state.value = state.value.copy(showLoading = true)
 
-        CoroutineScope(Dispatchers.IO).launch {
+        coroutineScope.launch {
             interactor.saveAccount(Account(login, password))
 
-            val accs = interactor.getAccounts()
-            val msg = accs.toString()
+            val accountSessionInfo = interactor.getAccountSessionInfo()
+
             delay(2000)
 
-            validateAndSetState(msg, login, password)
+            val result = accountSessionInfo.result
+            val message = accountSessionInfo.stringResult
 
-            val oldestState = state.value
-            state.value = LoginState(
-                message = oldestState.message,
-                login = oldestState.login,
-                password = oldestState.password,
-                hasMessage = oldestState.hasMessage,
-                hasError = oldestState.hasError,
-                showLoading = false
-            )
+            setLoginState(result, message)
         }
     }
 
-    fun onMessageHandled(handledMessage: HandledMessage) {
-        val oldState = state.value
-        state.value = LoginState(
-            message = oldState.message,
-            login = oldState.login,
-            password = oldState.password
-        )
-    }
-
-    private fun validateAndSetState(accountsMessage: String, login: String, password: String) {
-        val check = Random.nextInt(0, 2)
-
-        if (check == 0) {
-            setSuccessState(accountsMessage, login, password)
-        } else {
-            setErrorState(accountsMessage, login, password, check)
+    private fun setLoginState(
+        result: LoginInteractor.RESULT_TYPE,
+        message: String
+    ) {
+        when (result) {
+            LoginInteractor.RESULT_TYPE.NO_AUTH -> {
+                state.value = state.value.copy(noAuth = true, message = message)
+            }
+            LoginInteractor.RESULT_TYPE.MORE_THAN_ONE_ACCOUNT -> {
+                state.value = state.value.copy(moreThanOneAccount = true, message = message)
+            }
+            LoginInteractor.RESULT_TYPE.SUCCESS -> {
+                state.value = state.value.copy(successLogin = true, message = message)
+            }
         }
-        count++
     }
 
-    private fun setErrorState(
-        accountsMessage: String,
-        login: String,
-        password: String,
-        check: Int
-    ) {
-        state.value =
-            LoginState(
-                login = login,
-                password = password,
-                hasMessage = true,
-                message = "$count ЧИСЛО == $check || Ошибка входа $login || $password || аккаунты == $accountsMessage",
-                hasError = true
-            )
-    }
-
-    private fun setSuccessState(
-        accountsMessage: String,
-        login: String,
-        password: String,
-    ) {
-        state.value =
-            LoginState(
-                login = login,
-                password = password,
-                hasMessage = true,
-                message = "$count Успешный вход = $login || $password || аккаунты == $accountsMessage",
-                hasError = false
-            )
-    }
-
-    class LoginState(
-        val message: String = "Дефолтное",
-        val hasMessage: Boolean = false,
-        val login: String = "ДД",
+    data class LoginState(
+        val login: String = "",
         val password: String = "",
-        val hasError: Boolean = false,
-        val showLoading: Boolean = false
+        val message: String = "",
+        val showLoading: Boolean = false,
+        val successLogin: Boolean = false,
+        val noAuth: Boolean = false,
+        val moreThanOneAccount: Boolean = false
     )
 
     enum class HandledMessage {

@@ -1,4 +1,4 @@
-package old.composables
+package com.zloysport.ui.composables
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,8 +12,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.zloysport.R
 import com.zloysport.ui.states.AllDrillsStateHolder
-import old.composables.common.CommonActionButton
-import old.composables.common.CommonTitleBar
 import com.zloysport.ui.old.ui.theme.InfoSize
 
 @Composable

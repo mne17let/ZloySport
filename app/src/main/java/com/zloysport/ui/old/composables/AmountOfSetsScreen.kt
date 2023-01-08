@@ -16,8 +16,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.zloysport.R
-import old.composables.common.CommonConfirmButton
-import old.composables.common.CommonTitleBar
+import com.zloysport.ui.composables.CommonConfirmButton
+import com.zloysport.ui.composables.CommonTitleBar
 import com.zloysport.ui.old.ui.theme.InfoSize
 import com.zloysport.ui.old.ui.util.TIMER
 

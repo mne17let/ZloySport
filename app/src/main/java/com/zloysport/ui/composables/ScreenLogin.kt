@@ -1,6 +1,5 @@
-package com.zloysport
+package com.zloysport.ui.composables
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
@@ -14,15 +13,10 @@ import androidx.compose.ui.platform.LocalContext
 import com.zloysport.ui.theme.SpaceBetweenColumnItems
 import com.zloysport.ui.states.LoginStateHolder
 
-var count = 0
-
 @Composable
 fun ScreenLogin(
     stateHolder: LoginStateHolder
 ) {
-
-    Log.d(GlobalTag, "$count рекомпозиция")
-    count++
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -35,18 +29,14 @@ fun ScreenLogin(
         ) {
             val loginState by remember { stateHolder.state }
             val loginValue = loginState.login
-            val hasMessage = loginState.hasMessage
-            val accsMessage = loginState.message
+            val passwordValue = loginState.password
+            val message = loginState.message
             val showLoading = loginState.showLoading
             val context = LocalContext.current
 
-            var passwordValue by remember { mutableStateOf("TextFieldValue - Пароль") }
 
-            if (hasMessage) {
-                val message = loginState.message
+            if (message.isNotBlank()) {
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                stateHolder.onMessageHandled(LoginStateHolder.HandledMessage.Toast)
-
             }
 
             if (showLoading) {
@@ -62,7 +52,7 @@ fun ScreenLogin(
                 TextField(
                     value = passwordValue,
                     onValueChange = {
-                        passwordValue = it
+                        stateHolder.onPasswordInput(it)
                     }
                 )
 
@@ -74,7 +64,7 @@ fun ScreenLogin(
 
                 Text(
                     modifier = Modifier.padding(SpaceBetweenColumnItems),
-                    text = accsMessage
+                    text = message
                 )
             }
         }

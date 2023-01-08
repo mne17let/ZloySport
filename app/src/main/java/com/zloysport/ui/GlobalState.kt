@@ -11,15 +11,16 @@ import javax.inject.Singleton
 
 @Singleton
 class GlobalState(
-    private val localStorage: LocalStorage
+    private val localStorage: LocalStorage,
+    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 ) {
 
     val globalState = MutableLiveData<GlobalState>()
 
     fun checkAccount() {
-        CoroutineScope(Dispatchers.IO).launch {
-            val accs = localStorage.getAccountData()
-            setGlobalState(accs)
+        coroutineScope.launch {
+            val accounts = localStorage.getAllAccounts()
+            setGlobalState(accounts)
         }
     }
 
@@ -41,7 +42,7 @@ class GlobalState(
 
     class GlobalState(
         val accountData: AccountData,
-        val haveAcc: Boolean
+        val hasAccount: Boolean
     )
 
     class AccountData(val list: List<Account>)

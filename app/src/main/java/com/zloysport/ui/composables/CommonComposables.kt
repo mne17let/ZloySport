@@ -1,4 +1,4 @@
-package old.composables.common
+package com.zloysport.ui.composables
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes

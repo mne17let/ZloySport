@@ -21,7 +21,7 @@ import com.zloysport.R
 import com.zloysport.data.Drill
 import com.zloysport.data.Range
 import com.zloysport.ui.states.AllDrillsStateHolder
-import old.composables.common.CommonTitleBar
+import com.zloysport.ui.composables.CommonTitleBar
 import com.zloysport.ui.composables.LineSlider
 import com.zloysport.ui.old.ui.theme.DarkGreen
 import com.zloysport.ui.old.ui.theme.DarkestBlue
