@@ -14,7 +14,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.zloysport.ui.old.ui.theme.Blue
+import com.zloysport.ui.theme.Blue
 import kotlin.math.*
 
 data class LineSliderRange(val count: Int)

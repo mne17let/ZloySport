@@ -11,8 +11,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.zloysport.R
+import com.zloysport.ui.composables.common.CommonActionButton
+import com.zloysport.ui.composables.common.CommonTitleBar
 import com.zloysport.ui.states.AllDrillsStateHolder
-import com.zloysport.ui.old.ui.theme.InfoSize
+import com.zloysport.ui.theme.InfoSize
 
 @Composable
 fun ScreenAllDrills(

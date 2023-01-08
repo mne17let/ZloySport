@@ -18,8 +18,7 @@ import androidx.navigation.NavController
 import com.zloysport.R
 import com.zloysport.ui.composables.CommonConfirmButton
 import com.zloysport.ui.composables.CommonTitleBar
-import com.zloysport.ui.old.ui.theme.InfoSize
-import com.zloysport.ui.old.ui.util.TIMER
+import com.zloysport.ui.theme.InfoSize
 
 @Composable
 fun AmountOfSetsScreen(navController: NavController) {
@@ -60,7 +59,6 @@ fun AmountOfSetsScreen(navController: NavController) {
         }
 
         CommonConfirmButton(textResourceId = R.string.next_button_title, onClick = {
-            navController.navigate(TIMER)
         })
     }
 }
