@@ -6,5 +6,5 @@ import androidx.room.PrimaryKey
 @Entity
 class Drill(
     @PrimaryKey val id: Int,
-    val name: String,
+    val name: String
 )

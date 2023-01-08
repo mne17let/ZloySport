@@ -1,6 +1,6 @@
 package com.zloysport.data
 
-import com.zloysport.ui.composables.CircleSliderRange
+import com.zloysport.ui.old.composables.CircleSliderRange
 import com.zloysport.ui.composables.LineSliderRange
 
 data class Drill(

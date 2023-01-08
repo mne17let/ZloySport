@@ -10,7 +10,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.zloysport.R
+import com.zloysport.ui.composables.common.CommonConfirmButton
 import com.zloysport.ui.composables.common.CommonTextField
+import com.zloysport.ui.composables.common.CommonTitleBar
 import com.zloysport.ui.theme.InfoSize
 
 @Composable
